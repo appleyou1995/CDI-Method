@@ -36,7 +36,7 @@ Table_Smooth_AllK = table();
 Table_Smooth_ret = table();
 Table_Smooth_RND = table();
     
-Path_RND = fullfile(Path_PaperFolder, 'Code', '02  風險中立測度');
+Path_RND = fullfile(Path_PaperFolder, 'Code', '02  風險中立密度（RND）');
 addpath(Path_RND);
 
 for i = 1:10 % length(Target_AllDate)
