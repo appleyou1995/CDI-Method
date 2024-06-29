@@ -1,35 +1,35 @@
-function [Smooth_AllK, Smooth_RND] = RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM)
+function [Smooth_AllK, Smooth_ret, Smooth_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM)
 
 % Index of Data
-Index_ID = 1;
+% Index_ID = 1;
 Index_Date = 2;
 Index_TTM = 3;
 Index_CPFlag = 4;
 Index_K = 5;
 Index_S = 6;
-Index_F = 7;                                                               % Forward price (Theoretical)
+% Index_F = 7;                                                               % Forward price (Theoretical)
 Index_OP_Bid = 8;
-Index_OP_Ask = 9;
-Index_OI = 10;
-Index_V = 11;
+% Index_OP_Ask = 9;
+% Index_OI = 10;
+% Index_V = 11;
 Index_IV = 12;
-Index_Delta = 13;
-Index_Gamma = 14;
-Index_Theta = 15;
+% Index_Delta = 13;
+% Index_Gamma = 14;
+% Index_Theta = 15;
 Index_Vega = 16;
 Index_RF = Index_Vega + 1;                                                 % Construction
 Index_DY = Index_Vega + 2;
 
 % Specific Data
-Index = find((Data(:, Index_Date)==Target_Date) & ...
-             (Data(:, Index_TTM) >= Target_TTM));
+Index = (Data(:, Index_Date)==Target_Date) & ...
+        (Data(:, Index_TTM) >= Target_TTM);
 Data = Data(Index, :);                                                     % Update: Data
 clear Index
 
 % Specific Time-to-Maturity 
 Target_TTM = min(Data(:, Index_TTM));                                      % Update: Target_TTM
 
-Index = find(Data(:, Index_TTM)==Target_TTM);
+Index = Data(:, Index_TTM)==Target_TTM;
 Data = Data(Index, :);                                                     % Update: Data
 clear Index
 
@@ -37,41 +37,41 @@ clear Index
 %% Correction of Expiration Date (Time-to-Maturity)
 
 % Saturday to Friday
-Date_EXP_WeekDay = weekday(datenum(num2str(Data(:, Index_Date)), 'yyyymmdd') ...
-                           + Data(:, Index_TTM));      
-Data(Date_EXP_WeekDay==7, Index_TTM) = Data(Date_EXP_WeekDay==7, Index_TTM) - 1;   % Update: Data    
-clear Date_EXP_WeekDay            
-    
+dateTime = datetime(num2str(Data(:, Index_Date)), 'InputFormat', 'yyyyMMdd');
+Date_EXP_WeekDay = weekday(dateTime + days(Data(:, Index_TTM)));
+Data(Date_EXP_WeekDay==7, Index_TTM) = Data(Date_EXP_WeekDay==7, Index_TTM) - 1;   % Update: Data
+clear Date_EXP_WeekDay
+
 % AM Settlement
 % Calculation of Risk-Free Rate and Implied Volatility (IvyDB Reference Manual) 
 Data(:, Index_TTM) = Data(:, Index_TTM) - 1;                               % Update: Data   
 
-Target_TTM = Data(1, Index_TTM);
+% Target_TTM = Data(1, Index_TTM);
 
 
 %% Data Filtering
 
 % Bid >= 0.375
-Index = find(Data(:, Index_OP_Bid) >= 0.375);
+Index = Data(:, Index_OP_Bid) >= 0.375;
 Data = Data(Index, :);                                                     % Update: Data
 clear Index
 
 % Out-of-the-Money (OTM) and Around At-the-Money (ATM) Options
-Index = find((Data(:, Index_CPFlag)==1) & ...
-             (Data(:, Index_K) >= (Data(:, Index_S))) & ...
-             (Data(:, Index_K) <= (Data(:, Index_S))));
+Index = (Data(:, Index_CPFlag) == 1) & ...
+        (Data(:, Index_K) >= Data(:, Index_S)) & ...
+        (Data(:, Index_K) <= Data(:, Index_S));
 Data(Index, Index_CPFlag) = 31;                                            % Update: Data (CP Flag)           
 clear Index
 
-Index = find((Data(:, Index_CPFlag)==2) & ...
-             (Data(:, Index_K) >= (Data(:, Index_S))) & ...
-             (Data(:, Index_K) <= (Data(:, Index_S))));
+Index = (Data(:, Index_CPFlag)==2) & ...
+        (Data(:, Index_K) >= (Data(:, Index_S))) & ...
+        (Data(:, Index_K) <= (Data(:, Index_S)));
 Data(Index, Index_CPFlag) = 32;                                            % Update: Data (CP Flag)           
 clear Index
           
-Index = find(((Data(:, Index_CPFlag)==1) & (Data(:, Index_K) >= Data(:, Index_S))) | ...
-             ((Data(:, Index_CPFlag)==2) & (Data(:, Index_K) <= Data(:, Index_S))) | ...
-             (fix(Data(:, Index_CPFlag) / 10)==3));      
+Index = ((Data(:, Index_CPFlag)==1) & (Data(:, Index_K) >= Data(:, Index_S))) | ...
+        ((Data(:, Index_CPFlag)==2) & (Data(:, Index_K) <= Data(:, Index_S))) | ...
+        (fix(Data(:, Index_CPFlag) / 10)==3);      
 Data = Data(Index, :);                                                     % Update: Data 
 clear Index 
 
@@ -148,12 +148,12 @@ Smooth_K = Smooth_K(2:(end - 1));                                          % Upd
 %% Risk-Neutral Density (Right-Tail Connection)
 
 % Setting
-BP_R0 = 0.92; 
+% BP_R0 = 0.92; 
 BP_R1 = 0.95; 
  
 % (BP_R1, K_R1, EMP_PDF_R1)
 Index = find((Smooth_EMP_CDF - BP_R1) >= 0);
-if length(Index) > 0
+if ~isempty(Index)
     BP_R1 = Smooth_EMP_CDF(Index(1));                                      % Update: BP_R1    
     
     K_R1 = Smooth_K(Index(1)); 
@@ -170,7 +170,7 @@ clear Index
 
 % (BP_R0, K_R0, EMP_PDF_R0, EMP_CDF_R0)
 Index = find((Smooth_EMP_CDF - BP_R0) >= 0);
-BP_R0 = Smooth_EMP_CDF(Index(1));                                          % Update: BP_R0
+% BP_R0 = Smooth_EMP_CDF(Index(1));                                          % Update: BP_R0
 K_R0 = Smooth_K(Index(1));
 EMP_PDF_R0 = Smooth_EMP_PDF(Index(1));
 EMP_CDF_R0 = Smooth_EMP_CDF(Index(1));
@@ -187,7 +187,7 @@ eq3 = subs(((1 + k * z)^(- 1 - 1 / k)) * exp(- (1 + k * z)^(- 1 / k)) / sigma, '
 sol = solve([eq1, eq2, eq3], mu, sigma, k);
 
 
-if (length(sol.mu)==0) | (length(sol.sigma)==0) | (length(sol.k)==0)
+if (isempty(sol.mu)) | (isempty(sol.sigma)) | (isempty(sol.k))
     clear eq1 eq2 eq3 sol
     eq1 = subs(- (1 + k * z)^(- 1 / k), 'x', K_R0) - log(EMP_CDF_R0);                                               % CDF at R0
     eq2 = subs(log((1 + k * z)^(- 1 - 1 / k)) - (1 + k * z)^(- 1 / k) - log(sigma), 'x', K_R0) - log(EMP_PDF_R0);   % PDF at R0
@@ -210,17 +210,17 @@ try
     Smooth_GEV_R_PDF = gevpdf(Smooth_AllK, ...
                               k, sigma, mu);
                       
-    % Right Tail of Risk-Neutral Distribution (CDF)
-    Smooth_GEV_R_CDF = gevcdf(Smooth_AllK, ...
-                              k, sigma, mu);     
-                          
-    % Parameters 
-    Parameters_GEV_R = [mu sigma k];     
-    
-    % Error of Three Conditions
-    FitError_GEV_R = CheckError_RightTail(mu, sigma, k, ...
-                                          K_R0, K_R1, ...
-                                          EMP_CDF_R0, EMP_PDF_R0, EMP_PDF_R1);          
+    % % Right Tail of Risk-Neutral Distribution (CDF)
+    % Smooth_GEV_R_CDF = gevcdf(Smooth_AllK, ...
+    %                           k, sigma, mu);     
+    % 
+    % % Parameters 
+    % Parameters_GEV_R = [mu sigma k];     
+    % 
+    % % Error of Three Conditions
+    % FitError_GEV_R = CheckError_RightTail(mu, sigma, k, ...
+    %                                       K_R0, K_R1, ...
+    %                                       EMP_CDF_R0, EMP_PDF_R0, EMP_PDF_R1);          
 catch
 end     
 clear EMP_CDF_R0 EMP_PDF_R0 EMP_PDF_R1
@@ -230,22 +230,22 @@ clear mu sigma k sol
 %% Risk-Neutral Density (Left-Tail Connection, Reverse Left to Right)
 
 % Setting
-BP_L0 = 0.05;
+% BP_L0 = 0.05;
 BP_L1 = 0.02;
 
 for n = 1:10000
-    n;
+    % n;
     
     % Setting
     if n > 1
         BP_L1 = min(Smooth_EMP_CDF(Smooth_EMP_CDF > BP_L1));               % Update: BP_L1  
-        BP_L0 = BP_L1 + 0.03;                                              % Update: BP_L0 
+        % BP_L0 = BP_L1 + 0.03;                                              % Update: BP_L0 
     else
     end
         
     % (BP_L1, K_L1, EMP_PDF_L1)
     Index = find((BP_L1 - Smooth_EMP_CDF) >= 0);
-    if length(Index) > 0
+    if ~isempty(Index)
         BP_L1 = Smooth_EMP_CDF(Index(end));                                % Update: BP_L1 
     
         K_L1 = Smooth_K(Index(end));  
@@ -261,7 +261,7 @@ for n = 1:10000
 
     % (BP_L0, K_L0, EMP_PDF_L0, EMP_CDF_L0)
     Index = find((BP_L0 - Smooth_EMP_CDF) >= 0);
-    BP_L0 = Smooth_EMP_CDF(Index(end));                                    % Update: BP_L0  
+    % BP_L0 = Smooth_EMP_CDF(Index(end));                                    % Update: BP_L0  
     K_L0 = Smooth_K(Index(end));
     EMP_PDF_L0 = Smooth_EMP_PDF(Index(end));
     EMP_CDF_L0 = Smooth_EMP_CDF(Index(end));
@@ -277,7 +277,7 @@ for n = 1:10000
   
     sol = solve([eq1, eq2, eq3], mu, sigma, k);
 
-    if (length(sol.mu)==0) | (length(sol.sigma)==0) | (length(sol.k)==0)
+    if (isempty(sol.mu)) | (isempty(sol.sigma)) | (isempty(sol.k))
         clear eq1 eq2 eq3 sol
         eq1 = subs(exp(- (1 + k * z)^(- 1 / k)), 'x', - K_L0) - (1 - EMP_CDF_L0);                                   % CDF at L0
         eq2 = subs(((1 + k * z)^(- 1 - 1 / k)) * exp(- (1 + k * z)^(- 1 / k)) / sigma, 'x', - K_L0) - EMP_PDF_L0;   % PDF at L0
@@ -300,12 +300,12 @@ for n = 1:10000
         Smooth_GEV_L_PDF = gevpdf(- Smooth_AllK, ...
                                   k, sigma, mu);
                       
-        % Left Tail of Risk-Neutral Distribution (CDF)
-        Smooth_GEV_L_CDF = 1 - gevcdf(- Smooth_AllK, ...
-                                      k, sigma, mu);   
-                          
-        % Parameters 
-        Parameters_GEV_L = [(- mu) sigma k];      
+        % % Left Tail of Risk-Neutral Distribution (CDF)
+        % Smooth_GEV_L_CDF = 1 - gevcdf(- Smooth_AllK, ...
+        %                               k, sigma, mu);   
+        % 
+        % % Parameters 
+        % Parameters_GEV_L = [(- mu) sigma k];      
     
         % Error of Three Conditions
         FitError_GEV_L = CheckError_LeftTail(mu, sigma, k, ...
@@ -332,7 +332,7 @@ clear mu sigma k sol
 Smooth_RND = nan(size(Smooth_AllK));                                       % Construct Space
 
 % Risk-Neutral Density (Empirical)
-Index_EMP = find((Smooth_AllK >= K_L0) & (Smooth_AllK <= K_R0));
+Index_EMP = (Smooth_AllK >= K_L0) & (Smooth_AllK <= K_R0);
 Smooth_RND(Index_EMP) = Smooth_EMP_PDF((Smooth_K >= K_L0) & (Smooth_K <= K_R0));
 
 % Generalized Extreme Value Function (GEV, Right Tail)
@@ -352,8 +352,11 @@ end
 
 %% Output
 
-Smooth_AllK = Smooth_AllK;
-Smooth_RND = Smooth_RND;
+S = Data(1, Index_S);
+Smooth_ret = log(Smooth_AllK ./ S);
+
+% Smooth_AllK = Smooth_AllK;
+% Smooth_RND = Smooth_RND;
 
 
 end
