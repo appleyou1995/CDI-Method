@@ -1,34 +1,25 @@
-function M = generate_matrix(k)
-    % Initialize the matrix M with zeros
-    M = zeros(k, k);
-    
-    % Fill in the matrix
-    for i = 0:k-1
-        for j = 0:k-1
-            M(k-i, j+1) = calculate_mij(i, j, k);
-        end
-    end
-end
-
-function mij = calculate_mij(i, j, k)
-
-    sum_term = 0;
-    for s = j:k-1
-        sum_term = sum_term + (-1)^(s - j) * nchoosek(k, s - j) * (k - s - 1)^(k - 1 - i);
-    end
-    mij = nchoosek(k - 1, k - 1 - i) * sum_term;
-
-    % mij = (1 / factorial(k - 1)) * nchoosek(k - 1 - i, k - 1) * sum_term;
-
-end
-
+clear; clc
+Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文著作\CDI Method';
 
 %% Generate matrix M
 
-k = 9;
-M = generate_matrix(k);
+Path_CDI = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method）');
+addpath(Path_CDI);
+
+k = 4;
+M = Bspline_basis_matrix(k);
+B = Bspline_basis_functions(k);
+
 disp(M);
 
+for i = 1:k
+    fprintf('B{%d}(y) = %s\n', i, char(B{i}));
+end
+
+rmpath(Path_CDI);
+
+
+%% Result
 
 %  k = 4
 % 
@@ -36,6 +27,11 @@ disp(M);
 %      3    -6     3     0
 %     -3     0     3     0
 %      1     4     1     0
+% 
+%   B{1}(y) = y^2/2 - y/2 - y^3/6 + 1/6
+%   B{2}(y) = y^3/2 - y^2 + 2/3
+%   B{3}(y) = y/2 + y^2/2 - y^3/2 + 1/6
+%   B{4}(y) = y^3/6
 % 
 % 
 %  k = 5
@@ -45,6 +41,12 @@ disp(M);
 %      6    -6    -6     6     0
 %     -4   -12    12     4     0
 %      1    11    11     1     0
+% 
+%   B{1}(y) = y^2/4 - y/6 - y^3/6 + y^4/24 + 1/24
+%   B{2}(y) = y^3/2 - y^2/4 - y/2 - y^4/6 + 11/24
+%   B{3}(y) = y/2 - y^2/4 - y^3/2 + y^4/4 + 11/24
+%   B{4}(y) = y/6 + y^2/4 + y^3/6 - y^4/6 + 1/24
+%   B{5}(y) = y^4/24
 % 
 % 
 %  k = 6
