@@ -10,14 +10,14 @@ function B = Bspline_basis_functions(k)
     syms y
     
     % Generate the matrix_elements as a row vector
-    matrix_elements = sym('y', [1 k]);    
+    vector_elements = sym('y', [1 k]);    
     for i = 1:k
-        matrix_elements(i) = y^(k - i);
+        vector_elements(i) = y^(k - i);
     end
 
     % Generate each basis function
     for i = 1:k
-        B{i} = (matrix_elements * M(:,i)) / factorial(k-1);
+        B{i} = (vector_elements * M(:,i)) / factorial(k-1);
     end
 
 end

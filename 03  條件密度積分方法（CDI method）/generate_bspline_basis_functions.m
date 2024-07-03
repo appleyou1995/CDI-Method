@@ -1,6 +1,7 @@
 clear; clc
 Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文著作\CDI Method';
 
+
 %% Generate matrix M
 
 Path_CDI = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method）');
