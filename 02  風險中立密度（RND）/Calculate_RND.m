@@ -1,4 +1,4 @@
-function [Smooth_AllK, Smooth_ret, Smooth_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM)
+function [Smooth_AllK, Smooth_AllR, Smooth_AllR_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM)
 
 % Index of Data
 % Index_ID = 1;
@@ -7,7 +7,7 @@ Index_TTM = 3;
 Index_CPFlag = 4;
 Index_K = 5;
 Index_S = 6;
-% Index_F = 7;                                                               % Forward price (Theoretical)
+% Index_F = 7;                                                             % Forward price (Theoretical)
 Index_OP_Bid = 8;
 % Index_OP_Ask = 9;
 % Index_OI = 10;
@@ -110,20 +110,16 @@ Smooth_IV = fnval(LSS, Smooth_K);
 clear LSS
 
 % Smoothed Option Price
-S0 = S0 * ones(size(Smooth_K));                                            % Update: S0
-TTM = TTM * ones(size(Smooth_K));                                          % Update: TTM
-DY = DY * ones(size(Smooth_K));                                            % Update: DY
-RF = RF * ones(size(Smooth_K));                                            % Update: RF
+S0_Vector = S0 * ones(size(Smooth_K));                                     % Update: S0_Vector
+TTM_Vector = TTM * ones(size(Smooth_K));                                   % Update: TTM_Vector
+DY_Vector = DY * ones(size(Smooth_K));                                     % Update: DY_Vector
+RF_Vector = RF * ones(size(Smooth_K));                                     % Update: RF_Vector
 
-Smooth_OP = blsprice(S0, Smooth_K, RF, TTM, Smooth_IV, DY);
-clear S0 DY
+Smooth_OP = blsprice(S0_Vector, Smooth_K, RF_Vector, TTM_Vector, Smooth_IV, DY_Vector);
 
 
 %% Risk-Neutral Density and Distribution (Empirical)
-
 % Smooth_EMP_PDF and Smooth_EMP_CDF (w.r.t. Smooth_K)
-TTM = TTM(1);                                                              % Update: TTM
-RF = RF(1); 
 
 % Risk-Neutral Density (PDF)
 % K_{2} to K_{N - 1}
@@ -141,7 +137,7 @@ Smooth_EMP_CDF = exp(RF * TTM) * ...
 
 % K_{2} to K_{N - 1}
 Smooth_K = Smooth_K(2:(end - 1));                                          % Update: Smooth_K
-% Smooth_IV = Smooth_IV(2:(end - 1));                                        % Update: Smooth_IV (Just Record)
+% Smooth_IV = Smooth_IV(2:(end - 1));                                      % Update: Smooth_IV (Just Record)
 % Smooth_OP = Smooth_OP(2:(end - 1));
 
 
@@ -208,19 +204,7 @@ try
 
     % Right Tail of Risk-Neutral Density (PDF)
     Smooth_GEV_R_PDF = gevpdf(Smooth_AllK, ...
-                              k, sigma, mu);
-                      
-    % % Right Tail of Risk-Neutral Distribution (CDF)
-    % Smooth_GEV_R_CDF = gevcdf(Smooth_AllK, ...
-    %                           k, sigma, mu);     
-    % 
-    % % Parameters 
-    % Parameters_GEV_R = [mu sigma k];     
-    % 
-    % % Error of Three Conditions
-    % FitError_GEV_R = CheckError_RightTail(mu, sigma, k, ...
-    %                                       K_R0, K_R1, ...
-    %                                       EMP_CDF_R0, EMP_PDF_R0, EMP_PDF_R1);          
+                              k, sigma, mu);      
 catch
 end     
 clear EMP_CDF_R0 EMP_PDF_R0 EMP_PDF_R1
@@ -234,12 +218,11 @@ clear mu sigma k sol
 BP_L1 = 0.02;
 
 for n = 1:10000
-    % n;
     
     % Setting
     if n > 1
         BP_L1 = min(Smooth_EMP_CDF(Smooth_EMP_CDF > BP_L1));               % Update: BP_L1  
-        % BP_L0 = BP_L1 + 0.03;                                              % Update: BP_L0 
+        % BP_L0 = BP_L1 + 0.03;                                            % Update: BP_L0 
     else
     end
         
@@ -261,7 +244,7 @@ for n = 1:10000
 
     % (BP_L0, K_L0, EMP_PDF_L0, EMP_CDF_L0)
     Index = find((BP_L0 - Smooth_EMP_CDF) >= 0);
-    % BP_L0 = Smooth_EMP_CDF(Index(end));                                    % Update: BP_L0  
+    % BP_L0 = Smooth_EMP_CDF(Index(end));                                  % Update: BP_L0  
     K_L0 = Smooth_K(Index(end));
     EMP_PDF_L0 = Smooth_EMP_PDF(Index(end));
     EMP_CDF_L0 = Smooth_EMP_CDF(Index(end));
@@ -329,34 +312,33 @@ clear mu sigma k sol
 
 %% Combination of Full Density 
 
-Smooth_RND = nan(size(Smooth_AllK));                                       % Construct Space
+Smooth_AllK_RND = nan(size(Smooth_AllK));                                  % Construct Space
 
 % Risk-Neutral Density (Empirical)
 Index_EMP = (Smooth_AllK >= K_L0) & (Smooth_AllK <= K_R0);
-Smooth_RND(Index_EMP) = Smooth_EMP_PDF((Smooth_K >= K_L0) & (Smooth_K <= K_R0));
+Smooth_AllK_RND(Index_EMP) = Smooth_EMP_PDF((Smooth_K >= K_L0) & (Smooth_K <= K_R0));
 
 % Generalized Extreme Value Function (GEV, Right Tail)
 Index_GEV_R = find(Smooth_AllK >= K_R0);
 try
-    Smooth_RND(Index_GEV_R) = Smooth_GEV_R_PDF(Index_GEV_R);
+    Smooth_AllK_RND(Index_GEV_R) = Smooth_GEV_R_PDF(Index_GEV_R);
 catch
 end
 
 % Generalized Extreme Value Function (GEV, Left Tail)
 Index_GEV_L = find(Smooth_AllK <= K_L0);
 try
-    Smooth_RND(Index_GEV_L) = Smooth_GEV_L_PDF(Index_GEV_L);
+    Smooth_AllK_RND(Index_GEV_L) = Smooth_GEV_L_PDF(Index_GEV_L);
 catch
 end
 
 
 %% Output
 
-S = Data(1, Index_S);
-Smooth_ret = log(Smooth_AllK ./ S);
+S0_ADJ = exp(- DY * TTM) * S0;
 
-% Smooth_AllK = Smooth_AllK;
-% Smooth_RND = Smooth_RND;
+Smooth_AllR = Smooth_AllK / S0_ADJ;
+Smooth_AllR_RND = S0_ADJ * Smooth_AllK_RND;
 
 
 end

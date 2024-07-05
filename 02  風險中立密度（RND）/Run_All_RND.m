@@ -33,8 +33,8 @@ clear FileName
 %% Generate All RND
 
 Table_Smooth_AllK = table();
-Table_Smooth_ret = table();
-Table_Smooth_RND = table();
+Table_Smooth_AllR = table();
+Table_Smooth_AllR_RND = table();
     
 Path_RND = fullfile(Path_PaperFolder, 'Code', '02  風險中立密度（RND）');
 addpath(Path_RND);
@@ -50,12 +50,12 @@ for i = 1:10 % length(Target_AllDate)
     Data = load(fullfile(Path_Data_Sub, 'IndexOptions19962019_SP500', FileName));
     clear FileName
 
-    [Smooth_AllK, Smooth_ret, Smooth_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM);
+    [Smooth_AllK, Smooth_AllR, Smooth_AllR_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM);
 
     columnName = num2str(Target_Date);
     Table_Smooth_AllK.(columnName) = Smooth_AllK;
-    Table_Smooth_ret.(columnName) = Smooth_ret;
-    Table_Smooth_RND.(columnName) = Smooth_RND;
+    Table_Smooth_AllR.(columnName) = Smooth_AllR;
+    Table_Smooth_AllR_RND.(columnName) = Smooth_AllR_RND;
 
     elapsed_time = toc;
     disp(['     Spend Time: ', num2str(elapsed_time), ' Seconds']);
@@ -68,10 +68,10 @@ rmpath(Path_RND);
 %%  Save
 
 output_filename = fullfile(Path_RND, 'Output_Tables.mat');
-save(output_filename, 'Table_Smooth_AllK', 'Table_Smooth_ret', 'Table_Smooth_RND');
+save(output_filename, 'Table_Smooth_AllK', 'Table_Smooth_AllR', 'Table_Smooth_AllR_RND');
 
 
 %%  Read data in the table
 
-tttTable = Table_Smooth_AllK{1, '19960117'};
-disp(tttTable);
+Table_AllR_19960117 = Table_Smooth_AllR{1, '19960117'};
+disp(Table_AllR_19960117);
