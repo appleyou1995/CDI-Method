@@ -11,10 +11,10 @@ Target_TTM = 29;
 
 %% Load Data
 
-Path_PaperFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文著作\CDI Method';
+Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文著作\CDI Method';
 
-Path_Data     = fullfile(Path_PaperFolder, 'Data');
-Path_Data_Sub = fullfile(Path_PaperFolder, 'Data', '99 姿穎學姊提供', '20240417');
+Path_Data     = fullfile(Path_MainFolder, 'Data');
+Path_Data_Sub = fullfile(Path_MainFolder, 'Data', '99 姿穎學姊提供', '20240417');
 
 Target_Date_Exdate = readtable(fullfile(Path_Data, 'Target_AllDate.csv'));
 Target_AllDate = Target_Date_Exdate.date;
@@ -36,7 +36,7 @@ Table_Smooth_AllK = table();
 Table_Smooth_AllR = table();
 Table_Smooth_AllR_RND = table();
     
-Path_RND = fullfile(Path_PaperFolder, 'Code', '02  風險中立密度（RND）');
+Path_RND = fullfile(Path_MainFolder, 'Code', '02  風險中立密度（RND）');
 addpath(Path_RND);
 
 for i = 1:10 % length(Target_AllDate)
