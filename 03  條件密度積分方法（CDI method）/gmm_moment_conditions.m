@@ -1,5 +1,6 @@
-function g = gmm_moment_conditions(theta, months, Smooth_ALLR, Smooth_AllR_RND, b)
+function g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
+    months = Smooth_ALLR.Properties.VariableNames;
     T = length(months);
     m = b;
     g = zeros(m, 1);
