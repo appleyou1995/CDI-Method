@@ -82,7 +82,7 @@ end
 %% Step 6: Initial parameters
 
 theta0 = rand(1, b);                                                       % Initial parameters
-W = eye(length(theta0));                                                   % Initial weighting matrix
+W = eye(b);                                                                % Initial weighting matrix
 
 
 %% Step 7: Minimize the objective function
@@ -94,5 +94,13 @@ options = optimoptions('fminunc', 'Display', 'iter', 'Algorithm', 'quasi-newton'
 [theta_hat, fval] = fminunc(@(theta) gmm_objective(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b, W), theta0, options);
 
 % Display estimated parameters
+disp('Estimated parameters:');
+disp(theta_hat);
+
+
+%% Summarize step 4 - step 7 above with one function
+
+theta_hat = gmm_theta_estimation(months, Smooth_ALLR, Smooth_AllR_RND, b);
+
 disp('Estimated parameters:');
 disp(theta_hat);
