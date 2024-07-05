@@ -91,7 +91,7 @@ W = eye(b);                                                                % Ini
 options = optimoptions('fminunc', 'Display', 'iter', 'Algorithm', 'quasi-newton');
 
 % Minimize the objective function
-[theta_hat, fval] = fminunc(@(theta) gmm_objective(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b, W), theta0, options);
+theta_hat = fminunc(@(theta) gmm_objective(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b, W), theta0, options);
 
 % Display estimated parameters
 disp('Estimated parameters:');
