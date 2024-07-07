@@ -27,10 +27,10 @@ Aggregate_Smooth_ALLR = Smooth_ALLR.Variables;
 min_value = min(Aggregate_Smooth_ALLR);
 
 % Find the maximum realized return within the sample
-max_value = max(Aggregate_Smooth_ALLR);
+max_value = max(Aggregate_Smooth_ALLR);                                    % To be modified
 
-num_knots = order + b + 1;
-knots = linspace(min_value, max_value, num_knots);
+num_knots = order + b + 1;                                                 % To be modified
+knots = linspace(min_value, max_value, num_knots);                         % To be modified
 
 clear Aggregate_Smooth_ALLR
 
@@ -45,18 +45,23 @@ B = Bspline_basis_functions(b);
 
 %% Step 4: Define the moment conditions function
 
-function g = moment_conditions(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b)
+function g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+
+    months = Smooth_ALLR.Properties.VariableNames;
     T = length(months);
     m = b;
     g = zeros(m, 1);
+    B = Bspline_basis_functions(b);
 
     for j = 1:m
         moment_sum = 0;
+
         for t = 1:T
             current_month_y = Smooth_ALLR{1, months{t}};
             current_month_RND = Smooth_AllR_RND{1, months{t}};
 
             g_theta = 0;
+
             for i = 1:b        
                 B_function = matlabFunction(B{i});
                 B_values = B_function(current_month_y);
@@ -64,8 +69,10 @@ function g = moment_conditions(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b
                 integral = trapz(current_month_y, B_values .* current_month_RND);            
                 g_theta = g_theta + theta(i) * integral;
             end
+
             moment_sum = moment_sum + g_theta ^ j;
         end
+
         g(j) = moment_sum / T - 1 / (j + 1);
     end
 end
@@ -73,16 +80,21 @@ end
 
 %% Step 5: Define the objective function
 
-function J = gmm_objective(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b, W)
-    g = moment_conditions(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b);
-    J = g' * W * g;                                                        % Objective function
+function J = gmm_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+
+    g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b);
+
+    % Use a GMM type optimization with only the first stage optimization
+    W = eye(b);
+
+    % Objective function
+    J = g' * W * g;
 end
 
 
 %% Step 6: Initial parameters
 
 theta0 = rand(1, b);                                                       % Initial parameters
-W = eye(b);                                                                % Initial weighting matrix
 
 
 %% Step 7: Minimize the objective function
@@ -91,7 +103,7 @@ W = eye(b);                                                                % Ini
 options = optimoptions('fminunc', 'Display', 'iter', 'Algorithm', 'quasi-newton');
 
 % Minimize the objective function
-theta_hat = fminunc(@(theta) gmm_objective(theta, months, Smooth_ALLR, Smooth_AllR_RND, B, b, W), theta0, options);
+theta_hat = fminunc(@(theta) gmm_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b), theta0, options);
 
 % Display estimated parameters
 disp('Estimated parameters:');
