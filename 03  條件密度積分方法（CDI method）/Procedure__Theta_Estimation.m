@@ -45,7 +45,7 @@ B = Bspline_basis_functions(b);
 
 %% Step 4: Define the moment conditions function
 
-function g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+function g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
     months = Smooth_ALLR.Properties.VariableNames;
     T = length(months);
@@ -80,9 +80,9 @@ end
 
 %% Step 5: Define the objective function
 
-function J = gmm_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+function J = GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
-    g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b);
+    g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b);
 
     % Use a GMM type optimization with only the first stage optimization
     W = eye(b);
@@ -103,7 +103,7 @@ theta0 = rand(1, b);                                                       % Ini
 options = optimoptions('fminunc', 'Display', 'iter', 'Algorithm', 'quasi-newton');
 
 % Minimize the objective function
-theta_hat = fminunc(@(theta) gmm_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b), theta0, options);
+theta_hat = fminunc(@(theta) GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b), theta0, options);
 
 % Display estimated parameters
 disp('Estimated parameters:');
@@ -112,7 +112,7 @@ disp(theta_hat);
 
 %% Summarize step 4 - step 7 above with one function
 
-theta_hat = gmm_theta_estimation(months, Smooth_ALLR, Smooth_AllR_RND, b);
+theta_hat = GMM_theta_estimation(months, Smooth_ALLR, Smooth_AllR_RND, b);
 
 disp('Estimated parameters:');
 disp(theta_hat);

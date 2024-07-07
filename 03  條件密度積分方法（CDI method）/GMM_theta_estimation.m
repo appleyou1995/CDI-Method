@@ -12,28 +12,29 @@ function theta_hat = GMM_theta_estimation(Smooth_ALLR, Smooth_AllR_RND, b)
     options = optimoptions('fminunc', 'Display', 'off', 'Algorithm', 'quasi-newton');
     
     % Minimize the objective function
-    theta_hat = fminunc(@(theta) gmm_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b), theta0, options);
+    theta_hat = fminunc(@(theta) GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b), theta0, options);
 
 end
 
 
 %% Local Function: GMM Objective Function
 
-function J = gmm_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+function J = GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
-    g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b);
+    g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b);
 
     % Use a GMM type optimization with only the first stage optimization
     W = eye(b);
 
     % Objective function
     J = g' * W * g;
+
 end
 
 
 %% Local Function: GMM Moment Conditions
 
-function g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+function g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
     months = Smooth_ALLR.Properties.VariableNames;
     T = length(months);
@@ -63,4 +64,5 @@ function g = gmm_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
         g(j) = moment_sum / T - 1 / (j + 1);
     end
+    
 end
