@@ -93,7 +93,9 @@ RF = Data(1, Index_RF);                                                    % Ann
 % All Possible Range
 K_Low = (0.3 / 100) * S0;                                                  % Hollstein and Prokopczuk (2016 JFQA) 
 K_High = 3 * S0;                                                           % Hollstein and Prokopczuk (2016 JFQA) 
-Smooth_AllK = K_Low:0.05:K_High;
+
+% Smooth_AllK = K_Low:0.05:K_High;
+Smooth_AllK = linspace(K_Low, K_High, 30000);
 
 clear K_Low K_High
 
