@@ -39,7 +39,7 @@ Table_Smooth_AllR_RND = table();
 Path_RND = fullfile(Path_MainFolder, 'Code', '02  風險中立密度（RND）');
 addpath(Path_RND);
 
-for i = 1:10 % length(Target_AllDate)
+for i = 1:length(Target_AllDate)
 
     tic;
 
@@ -62,13 +62,13 @@ for i = 1:10 % length(Target_AllDate)
 
 end
 
-rmpath(Path_RND);
-
 
 %%  Save
 
-output_filename = fullfile(Path_RND, 'Output_Tables.mat');
+output_filename = fullfile(Path_RND, 'Output_Tables_Fixed30000.mat');
 save(output_filename, 'Table_Smooth_AllK', 'Table_Smooth_AllR', 'Table_Smooth_AllR_RND');
+
+rmpath(Path_RND);
 
 
 %%  Read data in the table
