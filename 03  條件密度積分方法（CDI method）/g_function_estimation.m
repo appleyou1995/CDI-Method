@@ -10,9 +10,9 @@ function All_g_hat = g_function_estimation(theta_hat, Smooth_ALLR, b)
         current_month_y = Smooth_ALLR{1, months{t}};
         B_matrix = zeros(length(current_month_y), b);
         
-        for i = 1:b
-            B_function = matlabFunction(B{i});
-            B_matrix(:, i) = B_function(current_month_y);
+        for i = 1:(b + 1)
+            B_function = matlabFunction(B{i});                             % To be modified
+            B_matrix(:, i) = B_function(current_month_y);                  % To be modified
         end
         
         g_hat = (B_matrix * theta_hat(:)).';
