@@ -32,43 +32,49 @@ clear FileName
 
 %% Generate All RND
 
-Table_Smooth_AllK = table();
-Table_Smooth_AllR = table();
-Table_Smooth_AllR_RND = table();
+years = unique(floor(Target_AllDate / 10000));
     
+Path_Output = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
 Path_RND = fullfile(Path_MainFolder, 'Code', '02  風險中立密度（RND）');
 addpath(Path_RND);
 
-for i = 1:length(Target_AllDate)
-
-    tic;
-
-    Target_Date = Target_AllDate(i);
-    disp(['Processing date: ', num2str(Target_Date)]);
-
-    FileName = ['OP' num2str(fix(Target_Date / 10000)) '_' num2str(fix(rem(Target_Date, 10000) / 100)) '.txt'];
-    Data = load(fullfile(Path_Data_Sub, 'IndexOptions19962019_SP500', FileName));
-    clear FileName
-
-    [Smooth_AllK, Smooth_AllR, Smooth_AllR_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM);
-
-    columnName = num2str(Target_Date);
-    Table_Smooth_AllK.(columnName) = Smooth_AllK;
-    Table_Smooth_AllR.(columnName) = Smooth_AllR;
-    Table_Smooth_AllR_RND.(columnName) = Smooth_AllR_RND;
-
-    elapsed_time = toc;
-    disp(['     Spend Time: ', num2str(elapsed_time), ' Seconds']);
-
+for y = 1:length(years)
+    year = years(y);
+    disp(['Processing year: ', num2str(year)]);
+    
+    Table_Smooth_AllK = table();
+    Table_Smooth_AllR = table();
+    Table_Smooth_AllR_RND = table();
+    
+    month_in_year = Target_AllDate(floor(Target_AllDate / 10000) == year);
+    
+    for i = 1:length(month_in_year)
+        tic;
+        
+        Target_Date = month_in_year(i);
+        disp(['Processing date: ', num2str(Target_Date)]);
+        
+        FileName = ['OP' num2str(fix(Target_Date / 10000)) '_' num2str(fix(rem(Target_Date, 10000) / 100)) '.txt'];
+        Data = load(fullfile(Path_Data_Sub, 'IndexOptions19962019_SP500', FileName));
+        clear FileName
+        
+        [Smooth_AllK, Smooth_AllR, Smooth_AllR_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM);
+        
+        columnName = num2str(Target_Date);
+        Table_Smooth_AllK.(columnName) = Smooth_AllK;
+        Table_Smooth_AllR.(columnName) = Smooth_AllR;
+        Table_Smooth_AllR_RND.(columnName) = Smooth_AllR_RND;
+        
+        elapsed_time = toc;
+        disp(['     Spend Time: ', num2str(elapsed_time), ' Seconds']);
+    end
+    
+    % Save
+    output_filename = fullfile(Path_Output, ['Output_Tables_', num2str(year), '.mat']);
+    save(output_filename, 'Table_Smooth_AllK', 'Table_Smooth_AllR', 'Table_Smooth_AllR_RND');
 end
 
-
-%%  Save
-
-output_filename = fullfile(Path_RND, 'Output_Tables_Fixed30000.mat');
-save(output_filename, 'Table_Smooth_AllK', 'Table_Smooth_AllR', 'Table_Smooth_AllR_RND');
-
-rmpath(Path_RND);
+rmpath(Path_Output);
 
 
 %%  Read data in the table
