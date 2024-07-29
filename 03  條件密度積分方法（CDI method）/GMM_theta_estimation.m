@@ -1,6 +1,6 @@
 %% Main Function: GMM Theta Estimation
 
-function theta_hat = GMM_theta_estimation(Smooth_ALLR, Smooth_AllR_RND, b)
+function theta_hat = GMM_theta_estimation(Smooth_ALLR, Smooth_AllR_RND, b, min_knot, max_knot)
 
     % Set the seed for the random number generator
     rng(0);
@@ -12,19 +12,19 @@ function theta_hat = GMM_theta_estimation(Smooth_ALLR, Smooth_AllR_RND, b)
     options = optimoptions('fminunc', 'Display', 'off', 'Algorithm', 'quasi-newton');
     
     % Minimize the objective function
-    theta_hat = fminunc(@(theta) GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b), theta0, options);
+    theta_hat = fminunc(@(theta) GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b, min_knot, max_knot), theta0, options);
 
 end
 
 
 %% Local Function: GMM Objective Function
 
-function J = GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+function J = GMM_objective_function(theta, Smooth_ALLR, Smooth_AllR_RND, b, min_knot, max_knot)
 
-    g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b);
+    g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b, min_knot, max_knot);
 
     % Use a GMM type optimization with only the first stage optimization
-    W = eye(b);
+    W = eye(b + 1);
 
     % Objective function
     J = g' * W * g;
@@ -34,15 +34,14 @@ end
 
 %% Local Function: GMM Moment Conditions
 
-function g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
+function g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b, min_knot, max_knot)
 
     months = Smooth_ALLR.Properties.VariableNames;
     T = length(months);
     m = b;
-    g = zeros(m, 1);
-    B = Bspline_basis_functions(b);
+    g = zeros(m + 1, 1);
 
-    for j = 1:m
+    for j = 1:(m + 1)
         moment_sum = 0;
 
         for t = 1:T
@@ -51,9 +50,8 @@ function g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
             g_theta = 0;
 
-            for i = 1:b        
-                B_function = matlabFunction(B{i});
-                B_values = B_function(current_month_y);
+            for i = 1:(b + 1)
+                B_values = Bspline_basis_function_value(3, b, min_knot, max_knot, i, current_month_y);
                 
                 integral = trapz(current_month_y, B_values .* current_month_RND);            
                 g_theta = g_theta + theta(i) * integral;
@@ -64,5 +62,4 @@ function g = GMM_moment_conditions(theta, Smooth_ALLR, Smooth_AllR_RND, b)
 
         g(j) = moment_sum / T - 1 / (j + 1);
     end
-    
 end
