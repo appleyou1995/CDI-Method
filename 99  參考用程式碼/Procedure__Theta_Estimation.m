@@ -139,20 +139,20 @@ disp('Estimated parameters:');
 disp(theta_hat);
 
 
-%% Summarize step 4 - step 7 above with one function
+%% Summarize step 3 - step 7 above with one function
 
-% Path_CDI = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method）');
-% addpath(Path_CDI);
-% 
-% theta_hat = GMM_theta_estimation(Smooth_AllR, Smooth_AllR_RND, b, min_knot, max_knot);
-% 
-% disp('Estimated parameters:');
-% disp(theta_hat);
+Path_CDI = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method）');
+addpath(Path_CDI);
+
+theta_hat = GMM_theta_estimation(Smooth_AllR, Smooth_AllR_RND, b, min_knot, max_knot);
+
+disp('Estimated parameters:');
+disp(theta_hat);
 
 
 %% Step 8: Specify the month to plot
 
-t = 139;
+t = 1;
 months = Smooth_AllR.Properties.VariableNames;
 current_month_y = Smooth_AllR{1, months{t}};
 current_month = months{t};
