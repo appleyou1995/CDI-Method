@@ -142,6 +142,7 @@ df_merged['realized_ret'] = df_merged['exdate_spindx'] / df_merged['S0_ADJ']
 # %%  Output
 
 df_output = df_merged[['date', 'realized_ret']]
+df_output['date'] = df_merged['date'].str.replace('-', '')
 df_output.to_csv(os.path.join(Path_Output, 'Realized_Return.csv'), index=False)
 
 
