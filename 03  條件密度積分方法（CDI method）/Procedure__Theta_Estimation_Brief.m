@@ -35,12 +35,13 @@ clear input_filename year years_to_merge
 %% Define the knots for the B-spline
 
 Aggregate_Smooth_AllR = Smooth_AllR.Variables;
+ret_size = size(Smooth_AllK, 2);
 
 % Find the minimum value for which the estimated risk-neutral densities have positive support
 min_knot = min(Aggregate_Smooth_AllR);
 
 % Find the maximum realized return within the sample
-max_knot = max(Realized_Return.realized_ret);
+max_knot = max(Realized_Return.realized_ret(1:ret_size));
 
 clear Aggregate_Smooth_AllR
 
