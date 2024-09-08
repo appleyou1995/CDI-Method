@@ -15,30 +15,32 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 
 Path_Data     = fullfile(Path_MainFolder, 'Data');
 Path_Data_Sub = fullfile(Path_MainFolder, 'Data', '99 姿穎學姊提供', '20240417');
+Path_Data_inc = fullfile(Path_MainFolder, 'Data', 'IndexOptions19962022_SP500');
+Path_Data_exc = fullfile(Path_MainFolder, 'Data', 'IndexOptions19962022_SP500', 'Exclude IV-Based');
 
 Target_Date_Exdate = readtable(fullfile(Path_Data, 'Target_AllDate.csv'));
 Target_AllDate = Target_Date_Exdate.date;
 
 % Dividend Yield  [1. SecID | 2. Date (YYYYMMDD) | 3. Dividend Yield (Annualized)]
-FileName = 'IndexDivYield19962019.txt';
-Data_DY = load(fullfile(Path_Data_Sub, FileName));
+FileName = 'IndexDivYield19962022.txt';
+Data_DY = load(fullfile(Path_Data, FileName));
 clear FileName
 
 % Risk-Free Rate  [1. Date (YYYYMMDD) | 2. TTM (Days) | 3. Risk-Free Rate (Annualized)]
-FileName = 'RiskFreeRate19962019.txt';
-Data_RF = load(fullfile(Path_Data_Sub, FileName));
+FileName = 'RiskFreeRate19962022.txt';
+Data_RF = load(fullfile(Path_Data, FileName));
 clear FileName
 
 
 %% Generate All RND
 
 years = unique(floor(Target_AllDate / 10000));
-    
+
 Path_Output = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
 Path_RND = fullfile(Path_MainFolder, 'Code', '02  風險中立密度（RND）');
 addpath(Path_RND);
 
-for y = 1:length(years)
+for y = 25:length(years)
     year = years(y);
     disp(['Processing year: ', num2str(year)]);
     
@@ -55,10 +57,12 @@ for y = 1:length(years)
         disp(['Processing date: ', num2str(Target_Date)]);
         
         FileName = ['OP' num2str(fix(Target_Date / 10000)) '_' num2str(fix(rem(Target_Date, 10000) / 100)) '.txt'];
-        Data = load(fullfile(Path_Data_Sub, 'IndexOptions19962019_SP500', FileName));
+        % Data = load(fullfile(Path_Data_Sub, 'IndexOptions19962019_SP500', FileName));
+        Data_inc = load(fullfile(Path_Data_inc, FileName));
+        % Data_exc = load(fullfile(Path_Data_exc, FileName));
         clear FileName
         
-        [Smooth_AllK, Smooth_AllR, Smooth_AllR_RND] = Calculate_RND(Data, Data_DY, Data_RF, Target_Date, Target_TTM);
+        [Smooth_AllK, Smooth_AllR, Smooth_AllR_RND] = Calculate_RND(Data_inc, Data_DY, Data_RF, Target_Date, Target_TTM);
         
         columnName = num2str(Target_Date);
         Table_Smooth_AllK.(columnName) = Smooth_AllK;
