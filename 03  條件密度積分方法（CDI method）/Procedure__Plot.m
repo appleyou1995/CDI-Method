@@ -5,8 +5,8 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 %% Load the data
 
 % Risk-Free Rate  [1. Date (YYYYMMDD) | 2. TTM (Days) | 3. Risk-Free Rate (Annualized)]
-Path_Data_99 = fullfile(Path_MainFolder, 'Data', '99 姿穎學姊提供', '20240417');
-Data_RF = load(fullfile(Path_Data_99, 'RiskFreeRate19962019.txt'));
+Path_Data = fullfile(Path_MainFolder, 'Data');
+Data_RF = load(fullfile(Path_Data, 'RiskFreeRate19962022.txt'));
 
 % Realized Return
 Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  原始資料處理');
@@ -19,7 +19,7 @@ Smooth_AllK = [];
 Smooth_AllR = [];
 Smooth_AllR_RND = [];
 
-years_to_merge = 1996:2014;
+years_to_merge = 1996:2021;
 
 for year = years_to_merge
     
@@ -62,7 +62,7 @@ ret_size = size(Smooth_AllK, 2);
 min_knot = min(Aggregate_Smooth_AllR);
 
 % Find the maximum realized return within the sample
-max_knot = max(Realized_Return.realized_ret(1:ret_size));
+max_knot = 3;
 
 clear Aggregate_Smooth_AllR
 
@@ -70,7 +70,7 @@ clear Aggregate_Smooth_AllR
 %% Plot: Setting
 
 % Specify the month to plot
-t = 63;
+t = 291;
 
 months = Smooth_AllR.Properties.VariableNames;
 
@@ -84,7 +84,7 @@ RF = Risk_Free_Rate{t, 3};
 current_month = months{t};
 
 min_y = min(current_month_y_filtered);
-max_y = max(current_month_y_filtered);
+max_y = 3;
 
 % Define Color of Each Line
 o = [0.9290 0.6940 0.1250];
