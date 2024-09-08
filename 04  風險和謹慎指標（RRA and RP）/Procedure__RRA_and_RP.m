@@ -273,8 +273,8 @@ clear filename
 
 %% Relative Prudence (RP)
 
-y_min = -80;
-y_max = 80;
+y_min = -40;
+y_max = 40;
 
 figure;
 for idx = 1:6
