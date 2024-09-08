@@ -12,7 +12,7 @@ Smooth_AllK = [];
 Smooth_AllR = [];
 Smooth_AllR_RND = [];
 
-years_to_merge = 1996:2014;
+years_to_merge = 1996:2021;
 
 for year = years_to_merge
     
@@ -41,9 +41,10 @@ ret_size = size(Smooth_AllK, 2);
 min_knot = min(Aggregate_Smooth_AllR);
 
 % Find the maximum realized return within the sample
-max_knot = max(Realized_Return.realized_ret(1:ret_size));
+max_knot = 3;
 
 clear Aggregate_Smooth_AllR
+
 
 
 %% Estimate theta
