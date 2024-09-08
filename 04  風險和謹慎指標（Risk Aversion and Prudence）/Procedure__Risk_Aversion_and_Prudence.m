@@ -103,7 +103,7 @@ for b = 3:8
 
     % Specific folder
     Path_Output = fullfile(Path_MainFolder, 'Code', '04  輸出資料');
-    Path_04 = fullfile(Path_MainFolder, 'Code', '04  風險和謹慎指標（RRA and RP）');
+    Path_04 = fullfile(Path_MainFolder, 'Code', '04  風險和謹慎指標（Risk Aversion and Prudence）');
     addpath(Path_04);
 
     y = current_month_y_filtered;
