@@ -91,160 +91,125 @@ o = [0.9290 0.6940 0.1250];
 p = [0.4940 0.1840 0.5560];
 color_All = {'b', 'g', 'm', 'c', 'y', 'k', 'r', o, p};
 
-
-%% Plot: (1) Cubic B-Spline with g function value (2) Plot: g Function and SDF
+x_start = 0.9;
+x_end = 1.06;
+fill_color = [0.9, 0.9, 0.9];
 
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method） - 2021 JBF');
 addpath(Path_Data_03);
 
+Path_Output = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
+
+
+%% Plot: (1) Cubic B-Spline with g function value
+
+y_min = 0;
+y_max = 1.9;
+
+Cubic_BSpline_Basis_Functions_g_combined = figure;
+
 for b = 3:8
 
-    % Calculation
     y_BS = nan(b + 1, length(current_month_y_filtered));
-
     for i = 1:(b + 1)
         y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, current_month_y_filtered);
     end
-    clear i
+    g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
 
-    % Calculate the value of g function
-    theta_hat_var_name = ['theta_hat_', num2str(b)];
-    g_function_value = sum(transpose(eval(theta_hat_var_name)) .* y_BS, 1);
+    % Create subplot (2 rows, 3 columns)
+    subplot(2, 3, b-2);
 
-    % Calculate the value of SDF
-    SDF = exp(- RF .* TTM) .* (1 ./ g_function_value);
-
-    % Specific folder
-    Path_Output = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
-    Path_CDI = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method） - 2021 JBF');
-    addpath(Path_CDI);
-
-
-    % - - - - - Plot: Cubic B-Spline with g function value - - - - -
-
-    Cubic_BSpline_Basis_Functions_g = figure;
-
-    % Plot Figure: Each Cubic B-Spline Basis Function
-    max_y_value = -Inf;  % Initialize a variable to keep track of the maximum y value
+    % Plot cubic B-Spline basis functions
     for i = 1:(b + 1)
-        plot(current_month_y_filtered, y_BS(i, :), ...
-             'LineStyle', '-', ...
-             'LineWidth', 1, ...
-             'Color', color_All{i})
-        hold on
-        max_y_value = max(max_y_value, max(y_BS(i, :)));  % Update the max y value if needed
-    end
-    grid on
-
-    % Plot Figure: g function value
-    plot(current_month_y_filtered, g_function_value, ...
-         'LineStyle', ':', ...
-         'LineWidth', 3, ...
-         'Color', 'r')
-    hold on
-    max_y_value = max(max_y_value, max(g_function_value));  % Include the g function in the max y value calculation
-    min_y_value = min(ylim);
-
-    % Set the ylim to 120% of the maximum y value
-    ylim([min(ylim), 1.5 * max_y_value])
-
-
-    % Add vertical lines at x = 0.9 and x = 1.06
-    x_vals = [0.9, 1.06];
-    for j = 1:length(x_vals)    
-        plot([x_vals(j), x_vals(j)], [min_y_value, 1.2 * max_y_value], '--', 'LineWidth', 0.8, 'Color', [0.5 0.5 0.5])
-        text(x_vals(j), 1.21 * max_y_value, [num2str(x_vals(j))], ...
-             'VerticalAlignment', 'bottom', ...
-             'HorizontalAlignment', 'center', ...
-             'FontSize', 11, ...
-             'FontName', 'Times New Roman', ...
-             'FontWeight', 'Bold', ...
-             'Color', [0.5 0.5 0.5])
+        plot(current_month_y_filtered, y_BS(i, :), 'LineStyle', '-', 'LineWidth', 1);
+        hold on;
+        y_max = max(y_max, max(y_BS(i, :)));
     end
 
-    % Add Title
-    title(['Cubic B-Spline Basis Functions and g for ' num2str(current_month) ' (b = ' num2str(b) ')'], ...
-          'FontSize', 15, ...
-          'FontName', 'Times New Roman', ...
-          'FontWeight', 'Bold')
+    % Plot g function value
+    plot(current_month_y_filtered, g_function_value, 'LineStyle', ':', 'LineWidth', 3, 'Color', 'r');
+    y_max = max(y_max, max(g_function_value));
 
-    % Legend Setting
-    for i = 1:(b + 2)
-        if i < (b + 2)
-            type_legend{i} = ['$B^{' num2str(n) '}_{' num2str(i - 1) '} (y)$'];
-        else
-            type_legend{i} = ['$\sum_{i=0}^{' num2str(b) '} \theta_{i} B^{' num2str(n) '}_{i} (y)$'];
-        end
+    % Plot vertical lines
+    x_vals = [x_start, x_end];
+    
+    for j = 1:length(x_vals)
+        plot([x_vals(j), x_vals(j)], [y_min, 1.2 * y_max], '--', 'LineWidth', 0.8, 'Color', [0.5 0.5 0.5]);
     end
-    h = legend(type_legend);
-    clear type_legend
+    
+    fill([x_start x_end x_end x_start], ...
+         [y_min y_min y_max y_max], ...
+         fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
-    set(h, 'FontSize', 12, ...
-           'FontName', 'Times New Roman', ...
-           'FontWeight', 'Bold', ...
-           'Interpreter', 'Latex', ...
-           'Box', 'Off', ...
-           'Location', 'northwest', ...
-           'NumColumns', 2)
-    clear h
+    % Set limits
+    ylim([y_min, y_max]);
+    xlim([0, 1.2]);
+    grid on;
 
-    set(gca, 'Layer', 'Top')
-    set(gca, 'LooseInset', get(gca, 'TightInset'))
-    % set(gcf, 'Position', get(0, 'ScreenSize'))
+    % Add title
+    title(['b = ', num2str(b)]);
 
-    % Clear Variable
-    clear i
-
-    filename = ['Cubic_BSpline_Basis_Functions_g (' num2str(current_month) ') (b=' num2str(b) ').png'];
-    saveas(Cubic_BSpline_Basis_Functions_g, fullfile(Path_Output, filename));
-    clear filename
-
-
-    % - - - - - Plot: g Function and SDF - - - - -
-
-    g_and_SDF = figure;
-
-    % Plot Figure: g function value
-    plot(current_month_y_filtered, g_function_value, ...
-         'LineStyle', '--', ...
-         'LineWidth', 2, ...
-         'Color', 'r')
-    hold on
-
-    % Plot Figure: SDF as a scatter plot
-    scatter(current_month_y_filtered, SDF, ...
-            'Marker', '.', ...
-            'MarkerEdgeColor', 'b', ...
-            'LineWidth', 0.2)
-    hold on
-
-    % Set x-axis limits
-    xlim([0.9, 1.06])
-    ylim([0, 3])
-
-    % Add Title
-    title(['g Function and SDF for ' num2str(current_month) ' (b = ' num2str(b) ')'], ...
-          'FontSize', 15, ...
-          'FontName', 'Times New Roman', ...
-          'FontWeight', 'Bold')
-
-    set(gca, 'Layer', 'Top')
-    set(gca, 'LooseInset', get(gca, 'TightInset'))
-    % set(gcf, 'Position', get(0, 'ScreenSize'))
-
-    grid on
-
-    legend({'g Function', 'SDF'}, ...
-           'Location', 'best', ...
-           'Box', 'Off', ...
-           'FontSize', 11, ...
-           'FontName', 'Times New Roman')
-
-    % Clear Variable
-    clear i
-
-    filename = ['g_and_SDF (' num2str(current_month) ') (b=' num2str(b) ').png'];
-    saveas(g_and_SDF, fullfile(Path_Output, filename));
-    clear filename
+    % Add Legend
+    type_legend = cell(1, b + 2);
+    for i = 1:(b + 1)
+        type_legend{i} = ['$B^{' num2str(3) '}_{' num2str(i - 1) '} (y)$'];
+    end
+    type_legend{b + 2} = ['$\sum_{i=0}^{' num2str(b) '} \theta_{i} B^{' num2str(3) '}_{i} (y)$'];
+    legend(type_legend, 'Interpreter', 'Latex', 'Location', 'northwest', 'Box', 'Off', 'FontSize', 10);
+    hold off;
 
 end
+
+sgtitle('Cubic B-Spline with g function value for b = 3 to 8');
+
+set(gcf, 'Position', [50, 50, 1500, 850]);
+set(gca, 'LooseInset', get(gca, 'TightInset'));
+
+filename = 'Cubic_BSpline_Basis_Functions_g_combined.png';
+saveas(gcf, fullfile(Path_Output, filename));
+clear filename y_min y_max
+
+
+%% Plot: (2) g Function and SDF
+
+y_min = 0.6;
+y_max = 1.5;
+
+g_and_SDF_combined = figure;
+
+for b = 3:8
+
+    y_BS = nan(b + 1, length(current_month_y_filtered));
+    for i = 1:(b + 1)
+        y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, current_month_y_filtered);
+    end
+    g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
+
+    SDF = exp(- RF .* TTM) .* (1 ./ g_function_value);
+
+    subplot(2, 3, b-2);
+
+    plot(current_month_y_filtered, g_function_value, 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
+    hold on;
+
+    scatter(current_month_y_filtered, SDF, 'Marker', '.', 'MarkerEdgeColor', 'b');
+
+    % Set limits
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    xticks(x_start:0.02:x_end);
+    yticks(y_min:0.1:y_max);
+    grid on;
+
+    title(['b = ', num2str(b)]);
+
+end
+
+sgtitle('g Function and SDF for b = 3 to 8');
+
+set(gcf, 'Position', [50, 50, 1500, 850]);
+set(gca, 'LooseInset', get(gca, 'TightInset'));
+
+filename = 'g_and_SDF_combined.png';
+saveas(gcf, fullfile(Path_Output, filename));
+clear filename
