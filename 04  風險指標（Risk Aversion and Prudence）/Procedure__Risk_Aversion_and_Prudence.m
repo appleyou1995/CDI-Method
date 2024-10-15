@@ -27,7 +27,7 @@ for year = years_to_merge
 end
 
 % Estimated theta
-Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料');
+Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
 mat_files = dir(fullfile(Path_Data_03, 'theta_hat (b=*.mat'));
 
 for k = 1:length(mat_files)
@@ -86,7 +86,7 @@ store_RP             = nan(6, length(current_month_y_filtered));
 
 for b = 3:8
 
-    Path_03 = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method）');
+    Path_03 = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method） - 2021 JBF');
     addpath(Path_03);
 
     % Calculation
@@ -102,7 +102,7 @@ for b = 3:8
     g_function_value = sum(transpose(eval(theta_hat_var_name)) .* y_BS, 1);
 
     % Specific folder
-    Path_Output = fullfile(Path_MainFolder, 'Code', '04  輸出資料');
+    Path_Output = fullfile(Path_MainFolder, 'Code', '04  輸出資料 - 2021 JBF');
     Path_04 = fullfile(Path_MainFolder, 'Code', '04  風險指標（Risk Aversion and Prudence）');
     addpath(Path_04);
 
@@ -145,7 +145,7 @@ fill_color = [0.9, 0.9, 0.9];
 
 %% g function
 
-y_min = -0.3;
+y_min = -0.1;
 y_max = 1.6;
 
 figure;
@@ -177,7 +177,7 @@ clear filename
 
 %% Absolute Risk Aversion (ARA)
 
-y_min = -50;
+y_min = 0;
 y_max = 300;
 
 figure;
@@ -209,8 +209,8 @@ clear filename
 
 %% Relative Risk Aversion (RRA)
 
-y_min = -5;
-y_max = 30;
+y_min = 2;
+y_max = 15;
 
 figure;
 for idx = 1:6
@@ -241,8 +241,8 @@ clear filename
 
 %% Absolute Prudence (AP)
 
-y_min = -80;
-y_max = 80;
+y_min = 0;
+y_max = 100;
 
 figure;
 for idx = 1:6
@@ -273,8 +273,8 @@ clear filename
 
 %% Relative Prudence (RP)
 
-y_min = -40;
-y_max = 40;
+y_min = 2;
+y_max = 15;
 
 figure;
 for idx = 1:6
