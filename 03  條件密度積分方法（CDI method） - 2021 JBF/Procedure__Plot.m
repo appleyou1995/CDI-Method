@@ -202,6 +202,7 @@ for b = 3:8
     grid on;
 
     title(['b = ', num2str(b)]);
+    legend({'g Function', 'SDF'}, 'Location', 'northeast', 'Box', 'Off');
 
 end
 
