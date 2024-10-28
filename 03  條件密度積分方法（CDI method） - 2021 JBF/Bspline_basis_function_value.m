@@ -6,8 +6,8 @@ function B_value = Bspline_basis_function_value(n, b, min_knot, max_knot, functi
     knots = linspace(min_knot, max_knot, num_knots);
 
     % Find the index of inner knot points
-    middle_index = ceil(num_knots / 2);                                    % Way 1
-    % middle_index = floor(num_knots / 2);                                   % Way 2
+    % middle_index = ceil(num_knots / 2);                                    % Way 1
+    middle_index = floor(num_knots / 2);                                   % Way 2
     
     % Set the open uniform (left side)
     knots(1:(middle_index - 1)) = knots(1);
