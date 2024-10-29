@@ -165,7 +165,7 @@ sgtitle('Cubic B-Spline with g function value for b = 3 to 8');
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'Cubic_BSpline_Basis_Functions_g_combined.png';
+filename = 'ceil_Cubic_BSpline_Basis_Functions_g_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename y_min y_max
 
@@ -211,6 +211,6 @@ sgtitle('g Function and SDF for b = 3 to 8');
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'g_and_SDF_combined.png';
+filename = 'ceil_g_and_SDF_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
