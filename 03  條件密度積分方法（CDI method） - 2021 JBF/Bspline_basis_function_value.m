@@ -13,7 +13,7 @@ function B_value = Bspline_basis_function_value(n, b, min_knot, max_knot, functi
     knots(1:(middle_index - 1)) = knots(1);
 
     % Set the open uniform (right side)
-    knots((end - middle_index + 1):end) = knots(end);
+    knots((middle_index + 1):end) = knots(end);
 
     i = function_index;
     % B_value = zeros(size(y));
