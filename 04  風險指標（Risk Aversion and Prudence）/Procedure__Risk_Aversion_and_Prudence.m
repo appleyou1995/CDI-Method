@@ -28,7 +28,7 @@ end
 
 % Estimated theta
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
-mat_files = dir(fullfile(Path_Data_03, 'ceil_theta_hat (b=*.mat'));
+mat_files = dir(fullfile(Path_Data_03, 'floor_theta_hat (b=*.mat'));
 
 for k = 1:length(mat_files)
     file_path = fullfile(Path_Data_03, mat_files(k).name);
@@ -170,7 +170,7 @@ sgtitle('g Function for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'ceil_g_function.png';
+filename = 'floor_g_function.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -202,7 +202,7 @@ sgtitle('Absolute Risk Aversion (ARA) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'ceil_Absolute_Risk_Aversion.png';
+filename = 'floor_Absolute_Risk_Aversion.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -234,7 +234,7 @@ sgtitle('Relative Risk Aversion (RRA) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'ceil_Relative_Risk_Aversion.png';
+filename = 'floor_Relative_Risk_Aversion.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -266,7 +266,7 @@ sgtitle('Absolute Prudence (AP) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'ceil_Absolute_Prudence.png';
+filename = 'floor_Absolute_Prudence.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -298,6 +298,6 @@ sgtitle('Relative Prudence (RP) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'ceil_Relative_Prudence.png';
+filename = 'floor_Relative_Prudence.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
