@@ -46,7 +46,6 @@ max_knot = 3;
 clear Aggregate_Smooth_AllR
 
 
-
 %% Estimate theta
 
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method） - 2021 JBF');
@@ -60,6 +59,6 @@ for b = 3:8
     disp(['b = ' num2str(b) '  Estimated parameters:']);
     disp(theta_hat);
     
-    save_filename = ['ceil_theta_hat (b=' num2str(b) ').mat'];
+    save_filename = ['floor_theta_hat (b=' num2str(b) ').mat'];
     save(fullfile(Path_Output, save_filename), 'theta_hat');
 end
