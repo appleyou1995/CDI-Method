@@ -170,7 +170,7 @@ sgtitle('g Function for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'floor_g_function.png';
+filename = 'ceil_g_function.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -202,7 +202,7 @@ sgtitle('Absolute Risk Aversion (ARA) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'floor_Absolute_Risk_Aversion.png';
+filename = 'ceil_Absolute_Risk_Aversion.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -234,7 +234,7 @@ sgtitle('Relative Risk Aversion (RRA) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'floor_Relative_Risk_Aversion.png';
+filename = 'ceil_Relative_Risk_Aversion.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -266,7 +266,7 @@ sgtitle('Absolute Prudence (AP) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'floor_Absolute_Prudence.png';
+filename = 'ceil_Absolute_Prudence.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
@@ -298,6 +298,6 @@ sgtitle('Relative Prudence (RP) for b = 3 to 8');
 set(gcf, 'Position', [100, 100, 1500, 800]);
 set(gca, 'LooseInset', get(gca,'TightInset'));
 
-filename = 'floor_Relative_Prudence.png';
+filename = 'ceil_Relative_Prudence.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
