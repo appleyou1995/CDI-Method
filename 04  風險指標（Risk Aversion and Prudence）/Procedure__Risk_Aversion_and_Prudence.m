@@ -28,7 +28,7 @@ end
 
 % Estimated theta
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
-mat_files = dir(fullfile(Path_Data_03, 'theta_hat (b=*.mat'));
+mat_files = dir(fullfile(Path_Data_03, 'ceil_theta_hat (b=*.mat'));
 
 for k = 1:length(mat_files)
     file_path = fullfile(Path_Data_03, mat_files(k).name);
