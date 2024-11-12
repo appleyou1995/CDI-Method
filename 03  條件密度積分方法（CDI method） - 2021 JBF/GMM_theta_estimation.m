@@ -8,20 +8,33 @@ function theta_hat = GMM_theta_estimation(Smooth_AllR, Smooth_AllR_RND, Realized
     % Initial parameters
     theta0 = rand(1, b + 1);
 
-    % Lower bound (non-negative constraints)
-    lb = zeros(1, b + 1);  % Lower bound set to 0 (non-negative)
-    
-    % No upper bound (can set this if needed)
-    ub = [];  % No upper bound
-    
     % Optimization options
     options = optimoptions('fmincon', 'Display', 'iter', 'Algorithm', 'sqp');
+
+    % --------------------------------Way 1--------------------------------
+    % % Lower bound (non-negative constraints)
+    % lb = zeros(1, b + 1);  % Lower bound set to 0 (non-negative)
+    % 
+    % % No upper bound (can set this if needed)
+    % ub = [];  % No upper bound
+    % 
+    % % Minimize the objective function
+    % theta_hat = fmincon(...
+    %     @(theta) GMM_objective_function(theta, Smooth_AllR, Smooth_AllR_RND, ...
+    %     Realized_Return, b, min_knot, max_knot), ...
+    %     theta0, [], [], [], [], lb, ub, [], options);
+
+    % --------------------------------Way 2--------------------------------
+    lb = [];  % No lower bound
+    ub = [];  % No upper bound
     
-    % Minimize the objective function
+    % Minimize the objective function with nonlinear constraints
     theta_hat = fmincon(...
         @(theta) GMM_objective_function(theta, Smooth_AllR, Smooth_AllR_RND, ...
         Realized_Return, b, min_knot, max_knot), ...
-        theta0, [], [], [], [], lb, ub, [], options);
+        theta0, [], [], [], [], lb, ub, ...
+        @(theta) nonlinear_constraint(theta, Smooth_AllR, Realized_Return, b, min_knot, max_knot), ...
+        options);
 
 end
 
@@ -78,3 +91,40 @@ function g = GMM_moment_conditions(theta, Smooth_AllR, Smooth_AllR_RND, Realized
         g(j) = moment_sum / T - 1 / (j + 1);
     end
 end
+
+
+%% Local Function: nonlinear_constraint
+
+function [c, ceq] = nonlinear_constraint(theta, Smooth_AllR, Realized_Return, b, min_knot, max_knot)
+    
+    % Initialize the constraint output
+    months = Smooth_AllR.Properties.VariableNames;
+    T = length(months);
+    c = zeros(T, 1);                                                       % inequality constraints initially
+    ceq = [];                                                              % No equality constraints
+
+    % Loop through each month to calculate g_theta and set constraints
+    for t = 1:T
+        current_month_realized_ret = Realized_Return{t, 2};
+        current_month_y = Smooth_AllR{1, months{t}};
+
+        % Filter values based on current month realized return
+        current_month_y_filtered = current_month_y(current_month_y <= current_month_realized_ret);
+
+        g_theta = 0;
+
+        % Calculate g_theta as a linear combination of B-spline basis values
+        for i = 1:(b + 1)
+            B_values = Bspline_basis_function_value(3, b, min_knot, max_knot, i, current_month_y_filtered);
+            g_theta  = g_theta + theta(i) * B_values;
+        end
+
+        % Add the constraint g_theta >= 0 
+        % (rewrite as g_theta >= epsilon to avoid strict zero constraints)
+        % (rewrite as g_theta - epsilon >= 0)
+        % (rewrite as -(g_theta - epsilon) =< 0)
+        epsilon = 1e-6;                                                    % Small tolerance to ensure numerical stability
+        c(t) = -(g_theta - epsilon);                                       % Store constraint for month t
+    end
+end
+
