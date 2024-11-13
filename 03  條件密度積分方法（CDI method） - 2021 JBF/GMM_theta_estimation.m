@@ -100,7 +100,7 @@ function [c, ceq] = nonlinear_constraint(theta, Smooth_AllR, Realized_Return, b,
     % Initialize the constraint output
     months = Smooth_AllR.Properties.VariableNames;
     T = length(months);
-    c = zeros(T, 1);                                                       % inequality constraints initially
+    c = zeros(T, 1);                                                       % Initialize empty inequality constraints
     ceq = [];                                                              % No equality constraints
 
     % Loop through each month to calculate g_theta and set constraints
@@ -111,7 +111,8 @@ function [c, ceq] = nonlinear_constraint(theta, Smooth_AllR, Realized_Return, b,
         % Filter values based on current month realized return
         current_month_y_filtered = current_month_y(current_month_y <= current_month_realized_ret);
 
-        g_theta = 0;
+        % Initialize g_theta as a zero vector with the same length as B_values
+        g_theta = zeros(1, length(current_month_y_filtered));
 
         % Calculate g_theta as a linear combination of B-spline basis values
         for i = 1:(b + 1)
@@ -120,11 +121,11 @@ function [c, ceq] = nonlinear_constraint(theta, Smooth_AllR, Realized_Return, b,
         end
 
         % Add the constraint g_theta >= 0 
-        % (rewrite as g_theta >= epsilon to avoid strict zero constraints)
-        % (rewrite as g_theta - epsilon >= 0)
-        % (rewrite as -(g_theta - epsilon) =< 0)
+        % (rewrite as min(g_theta) >= epsilon to avoid strict zero constraints)
+        % (rewrite as min(g_theta) - epsilon >= 0)
+        % (rewrite as -(min(g_theta) - epsilon) =< 0)
         epsilon = 1e-6;                                                    % Small tolerance to ensure numerical stability
-        c(t) = -(g_theta - epsilon);                                       % Store constraint for month t
+        c(t) = -(min(g_theta) - epsilon);                                  % Store constraint for month t
     end
 end
 
