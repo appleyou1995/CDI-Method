@@ -135,7 +135,7 @@ end
 %% Plot Setting
 
 x_min = 0;
-x_max = 1.3;
+x_max = 1.21;
 
 x_start = 0.9;
 x_end = 1.06;
@@ -209,8 +209,8 @@ clear filename
 
 %% Relative Risk Aversion (RRA)
 
-y_min = 2;
-y_max = 15;
+y_min = 0;
+y_max = 10;
 
 figure;
 for idx = 1:6
@@ -273,8 +273,8 @@ clear filename
 
 %% Relative Prudence (RP)
 
-y_min = 2;
-y_max = 15;
+y_min = 0;
+y_max = 10;
 
 figure;
 for idx = 1:6
