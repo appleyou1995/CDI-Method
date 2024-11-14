@@ -1,4 +1,5 @@
 clear; clc
+
 Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文著作\CDI Method';
 
 
@@ -177,7 +178,7 @@ clear filename
 
 %% Absolute Risk Aversion (ARA)
 
-y_min = 0;
+y_min = -100;
 y_max = 300;
 
 figure;
@@ -209,8 +210,8 @@ clear filename
 
 %% Relative Risk Aversion (RRA)
 
-y_min = 0;
-y_max = 10;
+y_min = -3;
+y_max = 12;
 
 figure;
 for idx = 1:6
@@ -241,8 +242,8 @@ clear filename
 
 %% Absolute Prudence (AP)
 
-y_min = 0;
-y_max = 100;
+y_min = -100;
+y_max = 300;
 
 figure;
 for idx = 1:6
@@ -273,8 +274,8 @@ clear filename
 
 %% Relative Prudence (RP)
 
-y_min = 0;
-y_max = 10;
+y_min = -3;
+y_max = 12;
 
 figure;
 for idx = 1:6
