@@ -167,10 +167,79 @@ set(gca, 'LooseInset', get(gca, 'TightInset'));
 
 filename = 'ceil_Cubic_BSpline_Basis_Functions_g_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
-clear filename y_min y_max
+clear filename y_min y_max y_BS g_function_value
 
 
-%% Plot: (2) g Function and SDF
+%% Plot: (2) Cubic B-Spline with g function value (Full)
+
+y_min = -0.2;
+y_max = 2.8;
+
+Cubic_BSpline_Basis_Functions_g_combined_Full = figure;
+
+for b = 3:8
+
+    y_BS = nan(b + 1, length(current_month_y));
+    for i = 1:(b + 1)
+        y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, current_month_y);
+    end
+    g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
+
+    % Create subplot (2 rows, 3 columns)
+    subplot(2, 3, b-2);
+
+    % Plot cubic B-Spline basis functions
+    for i = 1:(b + 1)
+        plot(current_month_y, y_BS(i, :), 'LineStyle', '-', 'LineWidth', 1);
+        hold on;
+        y_max = max(y_max, max(y_BS(i, :)));
+    end
+
+    % Plot g function value
+    plot(current_month_y, g_function_value, 'LineStyle', ':', 'LineWidth', 3, 'Color', 'r');
+    y_max = max(y_max, max(g_function_value));
+
+    % Plot vertical lines
+    x_vals = [x_start, x_end];
+    
+    for j = 1:length(x_vals)
+        plot([x_vals(j), x_vals(j)], [y_min, 1.2 * y_max], '--', 'LineWidth', 0.8, 'Color', [0.5 0.5 0.5]);
+    end
+    
+    fill([x_start x_end x_end x_start], ...
+         [y_min y_min y_max y_max], ...
+         fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    % Set limits
+    ylim([y_min, y_max]);
+    xlim([0, 3]);
+    grid on;
+
+    % Add title
+    title(['b = ', num2str(b)]);
+
+    % Add Legend
+    type_legend = cell(1, b + 2);
+    for i = 1:(b + 1)
+        type_legend{i} = ['$B^{' num2str(3) '}_{' num2str(i - 1) '} (y)$'];
+    end
+    type_legend{b + 2} = ['$\sum_{i=0}^{' num2str(b) '} \theta_{i} B^{' num2str(3) '}_{i} (y)$'];
+    legend(type_legend, 'Interpreter', 'Latex', 'Location', 'northwest', 'Box', 'Off', 'FontSize', 10);
+    hold off;
+
+end
+
+sgtitle('Cubic B-Spline with g function value (Full range) for b = 3 to 8');
+
+set(gcf, 'Position', [50, 50, 1500, 850]);
+set(gca, 'LooseInset', get(gca, 'TightInset'));
+
+filename = 'ceil_Cubic_BSpline_Basis_Functions_g_combined_Full.png';
+saveas(gcf, fullfile(Path_Output, filename));
+clear filename y_min y_max y_BS g_function_value
+
+
+%% Plot: (3) g Function and SDF
 
 y_min = 0.6;
 y_max = 1.5;
