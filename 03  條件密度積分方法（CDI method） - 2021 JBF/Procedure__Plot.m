@@ -37,7 +37,7 @@ for year = years_to_merge
 end
 
 % Estimated theta
-Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF', 'non-negative theta');
+Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
 mat_files = dir(fullfile(Path_Data_03, 'ceil_theta_hat (b=*.mat'));
 
 for k = 1:length(mat_files)
@@ -98,7 +98,7 @@ fill_color = [0.9, 0.9, 0.9];
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method） - 2021 JBF');
 addpath(Path_Data_03);
 
-Path_Output = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF', 'non-negative theta');
+Path_Output = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
 
 
 %% Plot: (1) Cubic B-Spline with g function value
