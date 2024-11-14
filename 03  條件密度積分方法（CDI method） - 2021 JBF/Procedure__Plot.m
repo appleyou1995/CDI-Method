@@ -38,7 +38,7 @@ end
 
 % Estimated theta
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
-mat_files = dir(fullfile(Path_Data_03, 'ceil_theta_hat (b=*.mat'));
+mat_files = dir(fullfile(Path_Data_03, 'floor_theta_hat (b=*.mat'));
 
 for k = 1:length(mat_files)
     file_path = fullfile(Path_Data_03, mat_files(k).name);
@@ -165,7 +165,7 @@ sgtitle('Cubic B-Spline with g function value for b = 3 to 8');
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'ceil_Cubic_BSpline_Basis_Functions_g_combined.png';
+filename = 'floor_Cubic_BSpline_Basis_Functions_g_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename y_min y_max y_BS g_function_value
 
@@ -234,7 +234,7 @@ sgtitle('Cubic B-Spline with g function value (Full range) for b = 3 to 8');
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'ceil_Cubic_BSpline_Basis_Functions_g_combined_Full.png';
+filename = 'floor_Cubic_BSpline_Basis_Functions_g_combined_Full.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename y_min y_max y_BS g_function_value
 
@@ -280,6 +280,6 @@ sgtitle('g Function and SDF for b = 3 to 8');
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'ceil_g_and_SDF_combined.png';
+filename = 'floor_g_and_SDF_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
