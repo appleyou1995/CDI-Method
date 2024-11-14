@@ -120,10 +120,10 @@ function [c, ceq] = nonlinear_constraint(theta, Smooth_AllR, Realized_Return, b,
             g_theta  = g_theta + theta(i) * B_values;
         end
 
-        % Add the constraint g_theta >= 0 
-        % (rewrite as min(g_theta) >= epsilon to avoid strict zero constraints)
-        % (rewrite as min(g_theta) - epsilon >= 0)
-        % (rewrite as -(min(g_theta) - epsilon) =< 0)
+        % Add the constraint  g_theta >= 0 
+        % rewrite as          min(g_theta) >= epsilon      to avoid strict zero constraints
+        % rewrite as          min(g_theta) - epsilon >= 0
+        % rewrite as        -(min(g_theta) - epsilon) =< 0
         epsilon = 1e-6;                                                    % Small tolerance to ensure numerical stability
         c(t) = -(min(g_theta) - epsilon);                                  % Store constraint for month t
     end
