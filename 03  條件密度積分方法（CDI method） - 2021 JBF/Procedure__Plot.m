@@ -160,7 +160,7 @@ for b = [4, 6, 8]
 
 end
 
-sgtitle('Cubic B-Spline with g function value for b = 3 to 8');
+sgtitle('Cubic B-Spline with g function value');
 
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
@@ -229,7 +229,7 @@ for b = [4, 6, 8]
 
 end
 
-sgtitle('Cubic B-Spline with g function value (Full range) for b = 3 to 8');
+sgtitle('Cubic B-Spline with g function (Full range)');
 
 set(gcf, 'Position', [50, 50, 1500, 400]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
@@ -275,7 +275,7 @@ for b = [4, 6, 8]
 
 end
 
-sgtitle('g Function and SDF for b = 3 to 8');
+sgtitle('g Function and SDF');
 
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
