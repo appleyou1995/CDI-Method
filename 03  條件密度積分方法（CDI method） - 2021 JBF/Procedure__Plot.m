@@ -38,7 +38,7 @@ end
 
 % Estimated theta
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
-mat_files = dir(fullfile(Path_Data_03, 'ceil_theta_hat (b=*.mat'));
+mat_files = dir(fullfile(Path_Data_03, 'theta_hat (b=*.mat'));
 
 for k = 1:length(mat_files)
     file_path = fullfile(Path_Data_03, mat_files(k).name);
@@ -91,8 +91,8 @@ o = [0.9290 0.6940 0.1250];
 p = [0.4940 0.1840 0.5560];
 color_All = {'b', 'g', 'm', 'c', 'y', 'k', 'r', o, p};
 
-x_start = 0.9;
-x_end = 1.06;
+x_start = 0.8;
+x_end = 1.2;
 fill_color = [0.9, 0.9, 0.9];
 
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method） - 2021 JBF');
@@ -108,7 +108,7 @@ y_max = 1.9;
 
 Cubic_BSpline_Basis_Functions_g_combined = figure;
 
-for b = 3:8
+for b = [4, 6, 8]
 
     y_BS = nan(b + 1, length(current_month_y_filtered));
     for i = 1:(b + 1)
@@ -117,7 +117,7 @@ for b = 3:8
     g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
 
     % Create subplot (2 rows, 3 columns)
-    subplot(2, 3, b-2);
+    subplot(1, 3, b/2-1);
 
     % Plot cubic B-Spline basis functions
     for i = 1:(b + 1)
@@ -165,19 +165,19 @@ sgtitle('Cubic B-Spline with g function value for b = 3 to 8');
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'ceil_Cubic_BSpline_Basis_Functions_g_combined.png';
+filename = 'Cubic_BSpline_Basis_Functions_g_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename y_min y_max y_BS g_function_value
 
 
 %% Plot: (2) Cubic B-Spline with g function value (Full)
 
-y_min = -1;
-y_max = 11;
+y_min = -0.2;
+y_max = 3;
 
 Cubic_BSpline_Basis_Functions_g_combined_Full = figure;
 
-for b = 3:8
+for b = [4, 6, 8]
 
     y_BS = nan(b + 1, length(current_month_y));
     for i = 1:(b + 1)
@@ -186,7 +186,7 @@ for b = 3:8
     g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
 
     % Create subplot (2 rows, 3 columns)
-    subplot(2, 3, b-2);
+    subplot(1, 3, b/2-1);
 
     % Plot cubic B-Spline basis functions
     for i = 1:(b + 1)
@@ -224,17 +224,17 @@ for b = 3:8
         type_legend{i} = ['$B^{' num2str(3) '}_{' num2str(i - 1) '} (y)$'];
     end
     type_legend{b + 2} = ['$\sum_{i=0}^{' num2str(b) '} \theta_{i} B^{' num2str(3) '}_{i} (y)$'];
-    legend(type_legend, 'Interpreter', 'Latex', 'Location', 'northwest', 'Box', 'Off', 'FontSize', 10);
+    legend(type_legend, 'Interpreter', 'Latex', 'Location', 'northwest', 'Box', 'Off', 'FontSize', 10, 'NumColumns', 2);
     hold off;
 
 end
 
 sgtitle('Cubic B-Spline with g function value (Full range) for b = 3 to 8');
 
-set(gcf, 'Position', [50, 50, 1500, 850]);
+set(gcf, 'Position', [50, 50, 1500, 400]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'ceil_Cubic_BSpline_Basis_Functions_g_combined_Full.png';
+filename = 'Cubic_BSpline_Basis_Functions_g_combined_Full.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename y_min y_max y_BS g_function_value
 
@@ -246,7 +246,7 @@ y_max = 1.5;
 
 g_and_SDF_combined = figure;
 
-for b = 3:8
+for b = [4, 6, 8]
 
     y_BS = nan(b + 1, length(current_month_y_filtered));
     for i = 1:(b + 1)
@@ -280,6 +280,6 @@ sgtitle('g Function and SDF for b = 3 to 8');
 set(gcf, 'Position', [50, 50, 1500, 850]);
 set(gca, 'LooseInset', get(gca, 'TightInset'));
 
-filename = 'ceil_g_and_SDF_combined.png';
+filename = 'g_and_SDF_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
