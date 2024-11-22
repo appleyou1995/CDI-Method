@@ -117,22 +117,31 @@ for b = [4, 6, 8]
     g_double_prime = gradient(g_prime, y);
     g_triple_prime = gradient(g_double_prime, y);
 
+    % Derivative of Utility
+    u_1_prime = 1 ./ g;
+    u_2_prime = -1 ./ (g.^2) .* g_prime;
+    u_3_prime = 2 ./ (g.^3) .* (g_prime.^2) - 1 ./ (g.^2) .* g_double_prime;
+    u_4_prime = -6 ./ (g.^4) .* (g_prime.^3) + ...
+                6 ./ (g.^3) .* g_prime .* g_double_prime - ...
+                1 ./ (g.^2) .* g_triple_prime;
+
     % Risk Aversion
-    ARA = g_prime ./ g;
+    ARA = -u_2_prime ./ u_1_prime;
     RRA = y .* ARA;
     
     % Prudence
-    AP = (2 * (g_prime ./ g)) - (g_double_prime ./ g_prime);
+    AP = -u_3_prime ./ u_2_prime;
     RP = y .* AP;
 
     % Temperance
-    AT = (2 * (g_prime ./ g)) - (3 * (g_double_prime ./ g_prime)) + (g_triple_prime ./ g_double_prime);
+    AT = -u_4_prime ./ u_3_prime;
     RT = y .* AT;
 
     idx = b / 2 - 1;
     store_g(idx, :)              = g;
     store_g_prime(idx, :)        = g_prime;
     store_g_double_prime(idx, :) = g_double_prime;
+    store_g_triple_prime(idx, :) = g_triple_prime;
     store_ARA(idx, :)            = ARA;
     store_RRA(idx, :)            = RRA;
     store_AP(idx, :)             = AP;
@@ -140,6 +149,9 @@ for b = [4, 6, 8]
     store_AT(idx, :)             = AT;
     store_RT(idx, :)             = RT;
 
+    clear g g_prime g_double_prime g_triple_prime
+    clear u_1_prime u_2_prime u_3_prime u_4_prime
+    clear ARA RRA AP RP AT RT
 end
 
 
@@ -184,6 +196,71 @@ set(gca, 'LooseInset', get(gca,'TightInset'));
 % filename = 'g_function.png';
 % saveas(gcf, fullfile(Path_Output, filename));
 % clear filename
+
+
+%%  g function and its derivatives
+
+figure;
+for idx = 1:3
+    % Plot g(y)
+    subplot(4,3,idx);
+    hold on;
+    plot(y, store_g(idx, :), '.');
+    title(['g(y), b = ', num2str((idx + 1) * 2)]);
+    xlabel('y');
+    ylabel('g(y)');
+    xlim([x_min, x_max]);
+    ylim([0, 1.5]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+
+    % Plot g'(y)
+    subplot(4,3,idx + 3);
+    hold on;
+    plot(y, store_g_prime(idx, :), '.');
+    title(['g''(y), b = ', num2str((idx + 1) * 2)]);
+    xlabel('y');
+    ylabel('g''(y)');
+    xlim([x_min, x_max]);
+    ylim([-1.5, 2]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+
+    % Plot g''(y)
+    subplot(4,3,idx + 6);
+    hold on;
+    plot(y, store_g_double_prime(idx, :), '.');
+    title(['g''''(y), b = ', num2str((idx + 1) * 2)]);
+    xlabel('y');
+    ylabel('g''''(y)');
+    xlim([x_min, x_max]);
+    ylim([-2, 7]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+
+    % Plot g'''(y)
+    subplot(4,3,idx + 9);
+    hold on;
+    plot(y, store_g_triple_prime(idx, :), '.');
+    title(['g''''''(y), b = ', num2str((idx + 1) * 2)]);
+    xlabel('y');
+    ylabel('g''''''(y)');
+    xlim([x_min, x_max]);
+    ylim([-7, -3]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+end
+sgtitle('g Function and Its Derivatives');
+
+set(gcf, 'Position', [100, 100, 1200, 850]);
+
+filename = 'g_Function_and_Its_Derivatives.png';
+saveas(gcf, fullfile(Path_Output, filename));
+clear filename
 
 
 %% Absolute Risk Aversion (ARA)
@@ -316,8 +393,8 @@ clear filename
 
 %% Absolute Temperance (AT)
 
-y_min = -15;
-y_max = 15;
+y_min = 2.5;
+y_max = 7;
 
 figure;
 for idx = 1:3
@@ -348,8 +425,8 @@ clear filename
 
 %% Relative Temperance (RT)
 
-y_min = -15;
-y_max = 15;
+y_min = 2.5;
+y_max = 7;
 
 figure;
 for idx = 1:3
