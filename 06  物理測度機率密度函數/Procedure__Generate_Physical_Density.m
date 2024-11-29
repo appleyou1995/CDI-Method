@@ -21,7 +21,7 @@ for year = years_to_merge
     input_filename = fullfile(Path_Data_02, sprintf('Output_Tables_%d.mat', year));
         
     if exist(input_filename, 'file')
-        data = load(input_filename);        
+        data = load(input_filename);
         Smooth_AllR = [Smooth_AllR, data.Table_Smooth_AllR];
         Smooth_AllR_RND = [Smooth_AllR_RND, data.Table_Smooth_AllR_RND];
     else
