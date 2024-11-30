@@ -55,8 +55,10 @@ grid on;
 hold off;
 
 title('Probability Density Function Under Q Measure');
-xlabel('Growth Return');
+xlabel('Gross Return');
 ylabel('Probability Density Function');
+    
+xlim([0, 3.1]);
 
 filename = 'Q_Measure_PDF.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -84,8 +86,10 @@ for idx_b = 1:length(b_values)
     hold off;
 
     title(['b = ' num2str(b)]);
-    xlabel('Growth Return');
+    xlabel('Gross Return');
     ylabel('Probability Density Function');
+
+    xlim([0, 3.1]);
 
 end
 
@@ -107,7 +111,7 @@ for t = 1:length(months)
     x_values = Smooth_AllR{1, months{t}};
     
     pdf_values = Smooth_AllR_RND{1, months{t}};
-    cdf_values = cumsum(pdf_values);
+    cdf_values = cumsum(pdf_values) / sum(pdf_values);
     
     plot(x_values, cdf_values);
 end
@@ -116,10 +120,10 @@ grid on;
 hold off;
 
 title('Cumulative Distribution Function Under Q Measure');
-xlabel('Growth Return');
+xlabel('Gross Return');
 ylabel('Cumulative Distribution Function');
 xlim([0, 3.1]);
-ylim([0, 10500]);
+ylim([0, 1.05]);
 
 filename = 'Q_Measure_CDF.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -142,7 +146,7 @@ for idx_b = 1:length(b_values)
         x_values = Smooth_AllR{1, months{t}};
         
         pdf_values = P_Table{1, months{t}};
-        cdf_values = cumsum(pdf_values);
+        cdf_values = cumsum(pdf_values) / sum(pdf_values);
 
         plot(x_values, cdf_values);
     end
@@ -151,11 +155,11 @@ for idx_b = 1:length(b_values)
     hold off;
 
     title(['b = ' num2str(b)]);
-    xlabel('Growth Return');
+    xlabel('Gross Return');
     ylabel('Cumulative Distribution Function');
 
     xlim([0, 3.1]);
-    ylim([0, 10500]);
+    ylim([0, 1.05]);
 
 end
 
