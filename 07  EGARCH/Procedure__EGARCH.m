@@ -21,7 +21,7 @@ HISWindow_EST = 3800;                                                      % Day
 HISWindow_EI  = 3800;                                                      % Days
 
 % Simulation Path (EGARCH Model)
-NumPaths = 100;
+NumPaths = 100000;
 
 
 %% Load Data: Stock Return
@@ -41,6 +41,8 @@ clear Target_Date_Exdate
 
 
 %% Forecast S&P 500 Daily Returns with EGARCH(1,1) Model
+
+Annual_PDF = struct;
 
 for d = 1:length(Date_Monthly)
 
@@ -125,17 +127,60 @@ for d = 1:length(Date_Monthly)
     RET_Monthly = exp(RET_Monthly);                                        % Update: RET_Monthly    
 
     %*********************************************************************%
-    % 6. Output
-    FileName = ['GrossReturn_' num2str(Target_Date)];
-    save(fullfile(Path_Data_Output, FileName), 'RET_Monthly')
+    % 6. Calculate PDF of Monthly Returns
+
+    % Use Kernel Density Estimation to estimate PDF
+    [PDF_Values, PDF_X] = ksdensity(RET_Monthly);
+
+    %*********************************************************************%
+    % 7. Output
+
+    % Extract year from Target_Date
+    Year = floor(Target_Date / 10000);
+
+    % Append PDF data to annual storage
+    if ~isfield(Annual_PDF, ['Year_' num2str(Year)])
+        Annual_PDF.(['Year_' num2str(Year)]).X = [];
+        Annual_PDF.(['Year_' num2str(Year)]).Values = [];
+    end
+
+    Annual_PDF.(['Year_' num2str(Year)]).X = [Annual_PDF.(['Year_' num2str(Year)]).X; PDF_X];
+    Annual_PDF.(['Year_' num2str(Year)]).Values = [Annual_PDF.(['Year_' num2str(Year)]).Values; PDF_Values];
+
+    % FileName_PDF = ['PDF_' num2str(Target_Date)];
+    % save(fullfile(Path_Data_Output, FileName_PDF), 'PDF_X', 'PDF_Values');
 
     % Clear Variable
     clear Target_Date NumPeriods
     clear EstModel_EGARCH Est_Mean Est_Omega Est_Alpha Est_Beta Est_Gamma
     clear V_EGARCH I_EGARCH
     clear Index_EI Data_EI V_EGARCH_Forecast I_EGARCH_Forecast RET_EGARCH_Forecast
-    clear RET_Monthly
+    clear RET_Monthly PDF_X PDF_Values
 end
 
 clear Data_RET
 clear d i j
+
+
+%% Output
+
+Years = fieldnames(Annual_PDF);
+
+for i = 1:length(Years)
+    Year = Years{i};
+    FileName_Annual = [Year '_EGARCH_PDF.mat'];
+    save(fullfile(Path_Data_Output, FileName_Annual), '-struct', 'Annual_PDF', Year);
+end
+
+% Clear annual storage
+clear Annual_PDF Years i Year FileName_Annual
+
+
+%% Plot
+
+figure;
+plot(PDF_X, PDF_Values, 'LineWidth', 1.5);
+title(['PDF of Gross Return for ', num2str(Target_Date)]);
+xlabel('Gross Return');
+ylabel('Probability Density');
+grid on;
