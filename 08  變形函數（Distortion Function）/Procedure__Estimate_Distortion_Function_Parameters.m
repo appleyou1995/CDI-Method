@@ -76,7 +76,15 @@ end
 clear k Data FieldName Year_Data EGARCH_PDF_Files EGARCH_CDF_Month
 
 
-%% 
+%%  Distortion Function
 
+function D = Distortion(F, beta, alpha)
+
+    D = exp(-((-beta * log(F)).^alpha));
+
+end
+
+
+%% 
 
 
