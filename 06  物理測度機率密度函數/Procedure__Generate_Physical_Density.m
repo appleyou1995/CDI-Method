@@ -67,28 +67,28 @@ t = 291;
 
 months = Smooth_AllR.Properties.VariableNames;
 
-current_month_realized_ret = Realized_Return{t, 2};
-current_month_y = Smooth_AllR{1, months{t}};
+max_gross_return = Realized_Return{t, 2};
+max_gross_return_y = Smooth_AllR{1, months{t}};
 
-current_month = months{t};
+max_gross_return_month = months{t};
 
-min_y = min(current_month_y);
+min_y = min(max_gross_return_y);
 max_y = 3;
 
 
 %% Calculate g hat
 
-store_g = nan(3, length(current_month_y));
+store_g = nan(3, length(max_gross_return_y));
 
 for b = [4, 6, 8]
 
     Path_03 = fullfile(Path_MainFolder, 'Code', '03  條件密度積分方法（CDI method） - 2021 JBF');
     addpath(Path_03);
 
-    y_BS = nan(b + 1, length(current_month_y));
+    y_BS = nan(b + 1, length(max_gross_return_y));
 
     for i = 1:(b + 1)
-        y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, current_month_y);
+        y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, max_gross_return_y);
     end
     clear i
 
@@ -96,7 +96,7 @@ for b = [4, 6, 8]
     theta_hat_var_name = ['theta_hat_', num2str(b)];
     g_function_value = sum(transpose(eval(theta_hat_var_name)) .* y_BS, 1);
 
-    y = current_month_y;
+    y = max_gross_return_y;
     g = g_function_value;
 
     idx = b / 2 - 1;
@@ -111,11 +111,11 @@ end
 
 b_values = [4, 6, 8];
 
-b_4_AllR_PD = table();
-b_6_AllR_PD = table();
-b_8_AllR_PD = table();
+b_4_AllR_PDF = table();
+b_6_AllR_PDF = table();
+b_8_AllR_PDF = table();
 
-AllR_PD_Tables = {b_4_AllR_PD, b_6_AllR_PD, b_8_AllR_PD};
+AllR_PD_Tables = {b_4_AllR_PDF, b_6_AllR_PDF, b_8_AllR_PDF};
 
 for idx_b = 1:length(b_values)
 
@@ -123,24 +123,36 @@ for idx_b = 1:length(b_values)
     current_g = store_g(idx_b, :);
 
     % Initialize a table for the current b value
-    PD_Table = table();
+    PD_Table = zeros(length(months), length(max_gross_return_y));
 
     for t = 1:length(months)
-        current_Smooth_RND = Smooth_AllR_RND{1, months{t}};
-        current_month_PD = current_Smooth_RND .* current_g;
-        PD_Table.(months{t}) = current_month_PD;
+
+        % Retrieve the RND and x values for the current month
+        original_x = Smooth_AllR{1, months{t}};
+        original_f = Smooth_AllR_RND{1, months{t}};
+        
+        % Use the 'spline' method to interpolate the RND to match max_gross_return_y
+        interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'spline', 0);
+
+        % Calculate the physical density for the current month
+        current_month_PD = interpolated_f  .* current_g;
+        PD_Table(t, :) = current_month_PD;
+
     end
 
     AllR_PD_Tables{idx_b} = PD_Table;
     
 end
 
-b_4_AllR_PD = AllR_PD_Tables{1};
-b_6_AllR_PD = AllR_PD_Tables{2};
-b_8_AllR_PD = AllR_PD_Tables{3};
+b_4_AllR_PDF = AllR_PD_Tables{1};
+b_6_AllR_PDF = AllR_PD_Tables{2};
+b_8_AllR_PDF = AllR_PD_Tables{3};
+
+
+%% Output
 
 Path_Output = fullfile(Path_MainFolder, 'Code', '06  輸出資料');
 
-save(fullfile(Path_Output, 'b_4_AllR_PD.mat'), 'b_4_AllR_PD');
-save(fullfile(Path_Output, 'b_6_AllR_PD.mat'), 'b_6_AllR_PD');
-save(fullfile(Path_Output, 'b_8_AllR_PD.mat'), 'b_8_AllR_PD');
+save(fullfile(Path_Output, 'b_4_AllR_PDF.mat'), 'b_4_AllR_PDF');
+save(fullfile(Path_Output, 'b_6_AllR_PDF.mat'), 'b_6_AllR_PDF');
+save(fullfile(Path_Output, 'b_8_AllR_PDF.mat'), 'b_8_AllR_PDF');
