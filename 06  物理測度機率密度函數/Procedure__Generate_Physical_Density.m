@@ -156,3 +156,12 @@ Path_Output = fullfile(Path_MainFolder, 'Code', '06  輸出資料');
 save(fullfile(Path_Output, 'b_4_AllR_PDF.mat'), 'b_4_AllR_PDF');
 save(fullfile(Path_Output, 'b_6_AllR_PDF.mat'), 'b_6_AllR_PDF');
 save(fullfile(Path_Output, 'b_8_AllR_PDF.mat'), 'b_8_AllR_PDF');
+
+
+%% Note: Check Smooth_AllR Value
+
+Smooth_AllR_Table = zeros(length(months), length(max_gross_return_y));
+
+for t = 1:length(months)
+    Smooth_AllR_Table(t,:)=Smooth_AllR{1, months{t}};
+end
