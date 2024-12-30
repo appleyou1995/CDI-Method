@@ -21,7 +21,7 @@ HISWindow_EST = 3800;                                                      % Day
 HISWindow_EI  = 3800;                                                      % Days
 
 % Simulation Path (EGARCH Model)
-NumPaths = 100000;
+NumPaths = 30000;
 
 
 %% Load Data: Stock Return
@@ -130,7 +130,10 @@ for d = 1:length(Date_Monthly)
     % 6. Calculate PDF of Monthly Returns
 
     % Use Kernel Density Estimation to estimate PDF
-    [PDF_Values, PDF_X] = ksdensity(RET_Monthly);
+    [PDF_Values, PDF_X] = ksdensity(RET_Monthly, ...
+                                    'Bandwidth', 0.5, ...
+                                    'Support', [0, 3], ...
+                                    'NumPoints', 30000);
 
     %*********************************************************************%
     % 7. Output
@@ -151,11 +154,11 @@ for d = 1:length(Date_Monthly)
     % save(fullfile(Path_Data_Output, FileName_PDF), 'PDF_X', 'PDF_Values');
 
     % Clear Variable
-    clear Target_Date NumPeriods
+    clear NumPeriods
     clear EstModel_EGARCH Est_Mean Est_Omega Est_Alpha Est_Beta Est_Gamma
     clear V_EGARCH I_EGARCH
     clear Index_EI Data_EI V_EGARCH_Forecast I_EGARCH_Forecast RET_EGARCH_Forecast
-    clear RET_Monthly PDF_X PDF_Values
+    % clear Target_Date RET_Monthly PDF_X PDF_Values
 end
 
 clear Data_RET
