@@ -48,7 +48,6 @@ EGARCH_PDF_Files = dir(fullfile(Path_Data_07, '*_EGARCH_PDF.mat'));
 
 EGARCH_PDF_X = [];
 EGARCH_PDF_Values = [];
-EGARCH_CDF_Values = [];
 
 for k = 1:length(EGARCH_PDF_Files)
     
@@ -61,30 +60,36 @@ for k = 1:length(EGARCH_PDF_Files)
     EGARCH_PDF_X = [EGARCH_PDF_X; Year_Data.X];
     EGARCH_PDF_Values = [EGARCH_PDF_Values; Year_Data.Values];
 
-    % Calculate CDF value
-    numMonths = size(Year_Data.Values, 1);
-    EGARCH_CDF_Month = zeros(size(Year_Data.Values));
+end
 
-    for i = 1:numMonths
-        EGARCH_CDF_Month(i, :) = cumtrapz(Year_Data.X(i, :), Year_Data.Values(i, :));
-    end
+clear k Data FieldName Year_Data EGARCH_PDF_Files
 
-    EGARCH_CDF_Values = [EGARCH_CDF_Values; EGARCH_CDF_Month];
+
+%%  Interpolate and Compute Monthly Cumulative Distribution Functions (CDF) from EGARCH PDF
+
+EGARCH_CDF_Values = zeros(size(EGARCH_PDF_Values));
+
+for t = 1:length(Target_Date)
+
+    original_x = EGARCH_PDF_X(t, :);
+    original_f = EGARCH_PDF_Values(t, :);
+
+    interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'spline', 0);
+
+    cdf_values = cumtrapz(max_gross_return_y, interpolated_f);
+    cdf_values = cdf_values / max(cdf_values);
+
+    EGARCH_CDF_Values(t, :) = cdf_values;
 
 end
 
-clear k Data FieldName Year_Data EGARCH_PDF_Files EGARCH_CDF_Month
+clear original_x original_f interpolated_f cdf_values
 
 
 %%  Distortion Function
 
-function D = Distortion(F, beta, alpha)
+function D = Distortion(x, beta, alpha)
 
-    D = exp(-((-beta * log(F)).^alpha));
+    D = exp(-((-beta * log(x)).^alpha));
 
 end
-
-
-%% 
-
-
