@@ -205,3 +205,35 @@ function D = Distortion(x, beta, alpha)
     D = exp(-((-beta * log(x)).^alpha));
 
 end
+
+
+%% Plot
+
+years_with_months = floor(Target_Date / 10000) + mod(floor(Target_Date / 100), 100) / 12;
+
+figure;
+
+subplot(2, 1, 1);
+plot(years_with_months, optimal_alpha(:, 1), 'o', 'DisplayName', '\alpha (b=4)', 'MarkerSize', 4);
+hold on;
+plot(years_with_months, optimal_alpha(:, 2), 's', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4);
+plot(years_with_months, optimal_alpha(:, 3), 'd', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4);
+hold off;
+title('Prelec alpha');
+ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right');
+legend('Location', 'northwest', 'Box', 'Off');
+grid on;
+
+subplot(2, 1, 2);
+plot(years_with_months, optimal_beta(:, 1), 'o', 'DisplayName', '\beta (b=4)', 'MarkerSize', 4);
+hold on;
+plot(years_with_months, optimal_beta(:, 2), 's', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4);
+plot(years_with_months, optimal_beta(:, 3), 'd', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4);
+hold off;
+title('Prelec beta');
+xlabel('Year');
+ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right');
+legend('Location', 'northwest', 'Box', 'Off');
+grid on;
+
+sgtitle('Prelec Parameters Over Time');
