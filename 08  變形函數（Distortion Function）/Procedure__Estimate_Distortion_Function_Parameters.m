@@ -6,6 +6,7 @@ Path_Data    = fullfile(Path_MainFolder, 'Data');
 Path_Data_02 = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
 Path_Data_06 = fullfile(Path_MainFolder, 'Code', '06  輸出資料');
 Path_Data_07 = fullfile(Path_MainFolder, 'Code', '07  輸出資料');
+Path_Output = fullfile(Path_MainFolder, 'Code', '08  輸出資料');
 
 
 %% Load Data: Target_Date
@@ -214,26 +215,34 @@ years_with_months = floor(Target_Date / 10000) + mod(floor(Target_Date / 100), 1
 figure;
 
 subplot(2, 1, 1);
-plot(years_with_months, optimal_alpha(:, 1), 'o', 'DisplayName', '\alpha (b=4)', 'MarkerSize', 4);
+plot(years_with_months, optimal_alpha(:, 1), '--o', 'DisplayName', '\alpha (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold on;
-plot(years_with_months, optimal_alpha(:, 2), 's', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4);
-plot(years_with_months, optimal_alpha(:, 3), 'd', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4);
+plot(years_with_months, optimal_alpha(:, 2), '--s', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
+plot(years_with_months, optimal_alpha(:, 3), '--d', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
 title('Prelec alpha');
 ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right');
 legend('Location', 'northwest', 'Box', 'Off');
+xlim([1996, 2022]);
+xticks(1996:2:2022);
 grid on;
 
 subplot(2, 1, 2);
-plot(years_with_months, optimal_beta(:, 1), 'o', 'DisplayName', '\beta (b=4)', 'MarkerSize', 4);
+plot(years_with_months, optimal_beta(:, 1), '--o', 'DisplayName', '\beta (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold on;
-plot(years_with_months, optimal_beta(:, 2), 's', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4);
-plot(years_with_months, optimal_beta(:, 3), 'd', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4);
+plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
+plot(years_with_months, optimal_beta(:, 3), '--d', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
 title('Prelec beta');
 xlabel('Year');
 ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right');
 legend('Location', 'northwest', 'Box', 'Off');
+xlim([1996, 2022]);
+xticks(1996:2:2022);
 grid on;
 
-sgtitle('Prelec Parameters Over Time');
+set(gcf, 'Position', [50, 50, 1000, 650]);
+
+filename = 'Prelec_Parameters.png';
+saveas(gcf, fullfile(Path_Output, filename));
+clear filename
