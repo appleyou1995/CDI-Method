@@ -113,41 +113,70 @@ end
 clear original_x original_f interpolated_f cdf_values
 
 
-%% Optimization of Alpha and Beta Parameters for Matching EGARCH and Empirical CDFs Using Distortion Functions
+%% Optimization of Alpha and Beta Parameters with Algorithm Selection
 
-range_alpha = [0.5, 1.5];
-range_beta = [0.5, 1.5];
+range_alpha = [0.5, 20];
+range_beta  = [0.5, 20];
 
-optimal_alpha = zeros(length(Target_Date), 1);
-optimal_beta = zeros(length(Target_Date), 1);
+optimal_alpha = zeros(length(Target_Date), length(b_values));
+optimal_beta  = zeros(length(Target_Date), length(b_values));
 
 y_limits = max_gross_return_y(max_gross_return_y >= 0.8 & max_gross_return_y <= 1.2);
 
+% Algorithm Selection ('fmincon', 'ga', 'particleswarm', 'simulannealbnd')
+selected_algorithm = 'fmincon';
 
-for t = 1:length(Target_Date)
+
+for b_idx = 1:length(b_values)
+
+    b = b_values(b_idx);
+    CDF_data = AllR_CDF_Tables{b_idx};
+
+    fprintf('Processing b = %d...\n', b);
+
+    for t = 1:length(Target_Date)
+        
+        CDF_g_hats = CDF_data(t, :);
+        CDF_EGARCH = EGARCH_CDF_Values(t, :);
     
-    CDF_g_hats = b_4_AllR_CDF(t, :);
-    CDF_EGARCH = EGARCH_CDF_Values(t, :);
-
-    objective_function = @(params) compute_total_integral(...
-        params, y_limits, max_gross_return_y, CDF_g_hats, CDF_EGARCH);
-
-    initial_guess = [1.0, 1.0];
-
-    options = optimoptions('fmincon', 'Display', 'off', 'Algorithm', 'sqp');
-    lb = [range_alpha(1), range_beta(1)];
-    ub = [range_alpha(2), range_beta(2)];
-    [opt_params, ~] = fmincon(objective_function, initial_guess, [], [], [], [], lb, ub, [], options);
-
-    optimal_alpha(t) = opt_params(1);
-    optimal_beta(t) = opt_params(2);
-
-    fprintf('Optimal alpha: %f, beta: %f for Target_Date %d\n', opt_params(1), opt_params(2), t);
-
+        objective_function = @(params) compute_total_integral(...
+            params, y_limits, max_gross_return_y, CDF_g_hats, CDF_EGARCH);
+    
+        initial_guess = [1.0, 1.0];
+        lb = [range_alpha(1), range_beta(1)];
+        ub = [range_alpha(2), range_beta(2)];
+    
+        switch selected_algorithm
+            case 'fmincon'
+                options = optimoptions('fmincon', 'Display', 'off', 'Algorithm', 'sqp');
+                [opt_params, ~] = fmincon(objective_function, initial_guess, [], [], [], [], lb, ub, [], options);
+    
+            case 'ga'
+                options = optimoptions('ga', 'Display', 'iter', 'PopulationSize', 50, 'MaxGenerations', 20);
+                [opt_params, ~] = ga(objective_function, 2, [], [], [], [], lb, ub, [], options);
+    
+            case 'particleswarm'
+                options = optimoptions('particleswarm', 'Display', 'iter', 'SwarmSize', 50, 'MaxIterations', 20);
+                [opt_params, ~] = particleswarm(objective_function, 2, lb, ub, options);
+    
+            case 'simulannealbnd'
+                options = optimoptions('simulannealbnd', 'Display', 'iter', 'MaxIterations', 50);
+                [opt_params, ~] = simulannealbnd(objective_function, initial_guess, lb, ub, options);
+    
+            otherwise
+                error('Unsupported algorithm: %s', selected_algorithm);
+        end
+    
+        optimal_alpha(t, b_idx) = opt_params(1);
+        optimal_beta(t, b_idx)  = opt_params(2);
+    
+        fprintf('%d - Optimal alpha: %f, beta: %f\n', Target_Date(t), opt_params(1), opt_params(2));
+    end
 end
 
 
-% Compute distortion integral error
+%% Compute distortion integral error
+
 function total_integral = compute_total_integral(params, y_limits, max_gross_return_y, CDF_g_hats, CDF_EGARCH)
 
     alpha = params(1);
@@ -169,7 +198,8 @@ function total_integral = compute_total_integral(params, y_limits, max_gross_ret
 end
 
 
-% Distortion Function
+%% Distortion Function
+
 function D = Distortion(x, beta, alpha)
 
     D = exp(-((-beta * log(x)).^alpha));
