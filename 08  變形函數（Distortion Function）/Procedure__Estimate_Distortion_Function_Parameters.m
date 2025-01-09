@@ -175,6 +175,8 @@ for b_idx = 1:length(b_values)
     end
 end
 
+clear b_idx b t CDF_data opt_params
+
 
 %% Compute distortion integral error
 
@@ -208,7 +210,7 @@ function D = Distortion(x, beta, alpha)
 end
 
 
-%% Plot
+%% Plot: Prelec parameters
 
 years_with_months = floor(Target_Date / 10000) + mod(floor(Target_Date / 100), 100) / 12;
 
@@ -244,5 +246,114 @@ grid on;
 set(gcf, 'Position', [50, 50, 1000, 650]);
 
 filename = 'Prelec_Parameters.png';
+saveas(gcf, fullfile(Path_Output, filename));
+clear filename
+
+
+%% Plot: CDF comparison
+
+% Setting
+t = 291;
+
+CDF_b_4 = b_4_AllR_CDF(t, :);
+CDF_b_6 = b_6_AllR_CDF(t, :);
+CDF_b_8 = b_8_AllR_CDF(t, :);
+
+CDF_EGARCH = EGARCH_CDF_Values(t, :);
+
+CDF_EGARCH_b_4_Distortion = Distortion(CDF_EGARCH, optimal_beta(t, 1), optimal_alpha(t, 1));
+CDF_EGARCH_b_6_Distortion = Distortion(CDF_EGARCH, optimal_beta(t, 2), optimal_alpha(t, 2));
+CDF_EGARCH_b_8_Distortion = Distortion(CDF_EGARCH, optimal_beta(t, 3), optimal_alpha(t, 3));
+
+Date = Target_Date(t, 1);
+
+% Plot
+figure;
+layout = tiledlayout(2, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
+EGARCH_color = '#EDB120';
+
+% Left plot (b=4, full range)
+nexttile;
+plot(max_gross_return_y, CDF_b_4, 'LineWidth', 1.5, 'DisplayName', 'CDF b=4');
+hold on;
+plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'EGARCH CDF');
+plot(max_gross_return_y, CDF_EGARCH_b_4_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=4)');
+hold off;
+xlabel('Gross Return');
+ylabel('CDF');
+title(sprintf('b = 4 (Full Range, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 1), optimal_beta(t, 1)), 'Interpreter', 'tex');
+legend('Location', 'southeast', 'Box', 'Off');
+grid on;
+
+% Middle plot (b=6, full range)
+nexttile;
+plot(max_gross_return_y, CDF_b_6, 'LineWidth', 1.5, 'DisplayName', 'CDF b=6');
+hold on;
+plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'EGARCH CDF');
+plot(max_gross_return_y, CDF_EGARCH_b_6_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=6)');
+hold off;
+xlabel('Gross Return');
+title(sprintf('b = 6 (Full Range, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 2), optimal_beta(t, 2)), 'Interpreter', 'tex');
+legend('Location', 'southeast', 'Box', 'Off');
+grid on;
+
+% Right plot (b=8, full range)
+nexttile;
+plot(max_gross_return_y, CDF_b_8, 'LineWidth', 1.5, 'DisplayName', 'CDF b=8');
+hold on;
+plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'EGARCH CDF');
+plot(max_gross_return_y, CDF_EGARCH_b_8_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=8)');
+hold off;
+xlabel('Gross Return');
+title(sprintf('b = 8 (Full Range, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 3), optimal_beta(t, 3)), 'Interpreter', 'tex');
+legend('Location', 'southeast', 'Box', 'Off');
+grid on;
+
+% Left plot (b=4, zoomed in)
+nexttile;
+plot(max_gross_return_y, CDF_b_4, 'LineWidth', 1.5, 'DisplayName', 'CDF b=4');
+hold on;
+plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'EGARCH CDF');
+plot(max_gross_return_y, CDF_EGARCH_b_4_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=4)');
+hold off;
+xlabel('Gross Return (Zoomed In)');
+ylabel('CDF');
+title(sprintf('b = 4 (Zoomed In, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 1), optimal_beta(t, 1)), 'Interpreter', 'tex');
+legend('Location', 'northwest', 'Box', 'Off');
+xlim([0.8, 1.2]);
+grid on;
+
+% Middle plot (b=6, zoomed in)
+nexttile;
+plot(max_gross_return_y, CDF_b_6, 'LineWidth', 1.5, 'DisplayName', 'CDF b=6');
+hold on;
+plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'EGARCH CDF');
+plot(max_gross_return_y, CDF_EGARCH_b_6_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=6)');
+hold off;
+xlabel('Gross Return (Zoomed In)');
+title(sprintf('b = 6 (Zoomed In, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 2), optimal_beta(t, 2)), 'Interpreter', 'tex');
+legend('Location', 'northwest', 'Box', 'Off');
+xlim([0.8, 1.2]);
+grid on;
+
+% Right plot (b=8, zoomed in)
+nexttile;
+plot(max_gross_return_y, CDF_b_8, 'LineWidth', 1.5, 'DisplayName', 'CDF b=8');
+hold on;
+plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'EGARCH CDF');
+plot(max_gross_return_y, CDF_EGARCH_b_8_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=8)');
+hold off;
+xlabel('Gross Return (Zoomed In)');
+title(sprintf('b = 8 (Zoomed In, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 3), optimal_beta(t, 3)), 'Interpreter', 'tex');
+legend('Location', 'northwest', 'Box', 'Off');
+xlim([0.8, 1.2]);
+grid on;
+
+% Overall figure adjustments
+sgtitle(['CDF Comparison for ', num2str(Date)]);
+set(gcf, 'Position', [100, 100, 1300, 800]);
+
+filename = sprintf('CDF_Comparison_%s.png', num2str(Date));
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
