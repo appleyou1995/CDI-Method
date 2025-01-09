@@ -256,7 +256,7 @@ clear filename
 %% Plot: CDF comparison
 
 % Setting
-t = 291;
+t = 264;
 
 CDF_b_4 = b_4_AllR_CDF(t, :);
 CDF_b_6 = b_6_AllR_CDF(t, :);
