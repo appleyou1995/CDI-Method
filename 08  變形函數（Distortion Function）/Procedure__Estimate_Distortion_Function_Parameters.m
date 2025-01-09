@@ -215,8 +215,10 @@ end
 years_with_months = floor(Target_Date / 10000) + mod(floor(Target_Date / 100), 100) / 12;
 
 figure;
+layout = tiledlayout(2, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
 
-subplot(2, 1, 1);
+% Prelec alpha
+nexttile;
 plot(years_with_months, optimal_alpha(:, 1), '--o', 'DisplayName', '\alpha (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold on;
 plot(years_with_months, optimal_alpha(:, 2), '--s', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
@@ -229,7 +231,8 @@ xlim([1996, 2022]);
 xticks(1996:2:2022);
 grid on;
 
-subplot(2, 1, 2);
+% Prelec beta
+nexttile;
 plot(years_with_months, optimal_beta(:, 1), '--o', 'DisplayName', '\beta (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold on;
 plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
