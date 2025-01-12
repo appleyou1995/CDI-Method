@@ -23,7 +23,7 @@ clear Target_Date_Exdate
 Smooth_AllR = [];
 years_to_merge = 1996:2021;
 
-for year = years_to_merge    
+for year = years_to_merge
     input_filename = fullfile(Path_Data_02, sprintf('Output_Tables_%d.mat', year));    
     data = load(input_filename);
     Smooth_AllR = [Smooth_AllR, data.Table_Smooth_AllR];    
