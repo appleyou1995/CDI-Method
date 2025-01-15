@@ -62,7 +62,7 @@ title('Probability Density Function Under Q Measure');
 xlabel('Gross Return');
 ylabel('Probability Density');
     
-xlim([0, 3.1]);
+xlim([0, 3.05]);
 
 filename = 'Q_Measure_PDF.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -93,8 +93,7 @@ for idx_b = 1:length(b_values)
     xlabel('Gross Return');
     ylabel('Probability Density');
 
-    xlim([0, 3.1]);
-    ylim([0, 25]);
+    xlim([0, 3.05]);
 
 end
 
@@ -127,7 +126,7 @@ hold off;
 title('Cumulative Distribution Function Under Q Measure');
 xlabel('Gross Return');
 ylabel('Cumulative Probability');
-xlim([0, 3.1]);
+xlim([0, 3.05]);
 ylim([0, 1.05]);
 
 filename = 'Q_Measure_CDF.png';
@@ -163,7 +162,7 @@ for idx_b = 1:length(b_values)
     xlabel('Gross Return');
     ylabel('Cumulative Probability');
 
-    xlim([0, 3.1]);
+    xlim([0, 3.05]);
     ylim([0, 1.05]);
 
 end
