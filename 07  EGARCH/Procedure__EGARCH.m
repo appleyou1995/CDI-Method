@@ -115,7 +115,7 @@ for d = 1:length(Date_Monthly)
     end
 
     %*********************************************************************%
-    % 5: Calculate Log Returns (Monthly)
+    % 5. Calculate Log Returns (Monthly)
 
     % Daily Return (Log Return)
     RET_EGARCH_Forecast = Est_Mean + sqrt(V_EGARCH_Forecast) .* I_EGARCH_Forecast;
@@ -129,11 +129,17 @@ for d = 1:length(Date_Monthly)
     %*********************************************************************%
     % 6. Calculate PDF of Monthly Returns
 
+    % Manually specify PDF_X range
+    PDF_X = linspace(0, 3, 30000);
+
     % Use Kernel Density Estimation to estimate PDF
-    [PDF_Values, PDF_X] = ksdensity(RET_Monthly, ...
-                                    'Bandwidth', 0.5, ...
-                                    'Support', [0, 3], ...
-                                    'NumPoints', 30000);
+    [PDF_Values_temp, PDF_X_temp] = ksdensity(RET_Monthly, ...
+                                              'Bandwidth', 0.01, ...
+                                              'Support', [0, 3], ...
+                                              'NumPoints', 30000);
+
+    % Adjust PDF_Values to match manually specified PDF_X range
+    PDF_Values = interp1(PDF_X_temp, PDF_Values_temp, PDF_X, 'linear', 0);
 
     %*********************************************************************%
     % 7. Output
@@ -179,11 +185,81 @@ end
 clear Annual_PDF Years i Year FileName_Annual
 
 
-%% Plot
+%% Plot: Scatter Plot of RET_Monthly
+
+figure;
+scatter(1:length(RET_Monthly), RET_Monthly, '.');
+title('Scatter Plot of RET\_Monthly');
+xlabel('Index');
+ylabel('Value');
+grid on;
+
+
+%% Plot: Histogram of RET_Monthly
+
+figure;
+histogram(RET_Monthly, 100);
+title('Histogram of RET\_Monthly');
+xlabel('Value');
+ylabel('Frequency');
+xlim([0.8, 1.2]);
+grid on;
+
+
+%% Plot: Cumulative Plot of RET_Monthly
+
+figure;
+plot(sort(RET_Monthly), (1:length(RET_Monthly)) / length(RET_Monthly), 'LineWidth', 2);
+title('Cumulative Plot of RET\_Monthly');
+xlabel('Value');
+ylabel('Cumulative Probability');
+xlim([0.8, 1.2]);
+grid on;
+
+
+%% Plot: PDF after ksdensity
 
 figure;
 plot(PDF_X, PDF_Values, 'LineWidth', 1.5);
 title(['PDF of Gross Return for ', num2str(Target_Date)]);
 xlabel('Gross Return');
 ylabel('Probability Density');
+xlim([0.8, 1.2]);
 grid on;
+
+
+%% Plot: CDF after ksdensity
+
+CDF_Values = cumtrapz(PDF_X, PDF_Values);
+
+figure;
+plot(PDF_X, CDF_Values, 'LineWidth', 2);
+title(['CDF of Gross Return for ', num2str(Target_Date)]);
+xlabel('Gross Return');
+ylabel('Cumulative Probability');
+% xlim([0.8, 1.2]);
+xlim([0, 3]);
+ylim([0, 1]);
+grid on;
+
+
+%% Plot: Overlay Cumulative Plot and CDF after ksdensity
+
+figure;
+hold on;
+
+plot(sort(RET_Monthly), (1:length(RET_Monthly)) / length(RET_Monthly), ...
+     'LineWidth', 2, 'DisplayName', 'Empirical CDF');
+
+plot(PDF_X, CDF_Values, 'LineWidth', 2, 'DisplayName', 'CDF from ksdensity');
+
+title('Comparison of Empirical CDF and CDF from ksdensity');
+xlabel('Value');
+ylabel('Cumulative Probability');
+xlim([0.8, 1.2]);
+% xlim([0, 3]);
+ylim([0, 1]);
+legend('show');
+grid on;
+
+hold off;
