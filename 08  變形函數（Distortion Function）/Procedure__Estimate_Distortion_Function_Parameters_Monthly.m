@@ -299,7 +299,7 @@ clear max_alpha_date  max_beta_date   min_alpha_date  min_beta_date
 %% Plot: CDF comparison
 
 % Setting
-t = 265;
+t = 135;
 
 CDF_b_4 = b_4_AllR_CDF(t, :);
 CDF_b_6 = b_6_AllR_CDF(t, :);
