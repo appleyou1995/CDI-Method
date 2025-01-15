@@ -134,7 +134,7 @@ for d = 1:length(Date_Monthly)
 
     % Use Kernel Density Estimation to estimate PDF
     [PDF_Values_temp, PDF_X_temp] = ksdensity(RET_Monthly, ...
-                                              'Bandwidth', 0.01, ...
+                                              'Bandwidth', 0.001, ...
                                               'Support', [0, 3], ...
                                               'NumPoints', 30000);
 
@@ -245,19 +245,21 @@ grid on;
 
 %% Plot: Overlay Cumulative Plot and CDF after ksdensity
 
+CDF_Values = cumtrapz(PDF_X, PDF_Values);
+
 figure;
 hold on;
+
+plot(PDF_X, CDF_Values, 'LineWidth', 2, 'DisplayName', 'CDF from ksdensity');
 
 plot(sort(RET_Monthly), (1:length(RET_Monthly)) / length(RET_Monthly), ...
      'LineWidth', 2, 'DisplayName', 'Empirical CDF');
 
-plot(PDF_X, CDF_Values, 'LineWidth', 2, 'DisplayName', 'CDF from ksdensity');
-
 title('Comparison of Empirical CDF and CDF from ksdensity');
 xlabel('Value');
 ylabel('Cumulative Probability');
-xlim([0.8, 1.2]);
-% xlim([0, 3]);
+% xlim([0.8, 1.2]);
+xlim([0, 3]);
 ylim([0, 1]);
 legend('show');
 grid on;
