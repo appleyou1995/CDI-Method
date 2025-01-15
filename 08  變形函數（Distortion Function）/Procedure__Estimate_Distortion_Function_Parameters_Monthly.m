@@ -230,6 +230,7 @@ title('Prelec alpha');
 ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right');
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
+ylim([0.55, 1.7]);
 xticks(1996:2:2022);
 grid on;
 
@@ -245,6 +246,7 @@ xlabel('Year');
 ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right');
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
+ylim([0.8, 1.7]);
 xticks(1996:2:2022);
 grid on;
 
