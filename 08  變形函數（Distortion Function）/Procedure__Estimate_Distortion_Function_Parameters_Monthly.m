@@ -297,7 +297,7 @@ clear max_alpha_date  max_beta_date   min_alpha_date  min_beta_date
 %% Plot: CDF comparison
 
 % Setting
-t = 265;
+t = 135;
 
 CDF_b_4 = b_4_AllR_CDF(t, :);
 CDF_b_6 = b_6_AllR_CDF(t, :);
@@ -326,7 +326,7 @@ plot(max_gross_return_y, CDF_EGARCH_b_4_Distortion, '--', 'Color', EGARCH_color,
 hold off;
 xlabel('Gross Return');
 ylabel('CDF');
-title(sprintf('b = 4 (Full Range, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 1), optimal_beta(t, 1)), 'Interpreter', 'tex');
+title(sprintf('b = 4 (Full Range, \\alpha = %.4f, \\beta = %.4f)', optimal_alpha(t, 1), optimal_beta(t, 1)), 'Interpreter', 'tex');
 legend('Location', 'southeast', 'Box', 'Off');
 grid on;
 
@@ -338,7 +338,7 @@ plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.
 plot(max_gross_return_y, CDF_EGARCH_b_6_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=6)');
 hold off;
 xlabel('Gross Return');
-title(sprintf('b = 6 (Full Range, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 2), optimal_beta(t, 2)), 'Interpreter', 'tex');
+title(sprintf('b = 6 (Full Range, \\alpha = %.4f, \\beta = %.4f)', optimal_alpha(t, 2), optimal_beta(t, 2)), 'Interpreter', 'tex');
 legend('Location', 'southeast', 'Box', 'Off');
 grid on;
 
@@ -350,7 +350,7 @@ plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.
 plot(max_gross_return_y, CDF_EGARCH_b_8_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=8)');
 hold off;
 xlabel('Gross Return');
-title(sprintf('b = 8 (Full Range, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 3), optimal_beta(t, 3)), 'Interpreter', 'tex');
+title(sprintf('b = 8 (Full Range, \\alpha = %.4f, \\beta = %.4f)', optimal_alpha(t, 3), optimal_beta(t, 3)), 'Interpreter', 'tex');
 legend('Location', 'southeast', 'Box', 'Off');
 grid on;
 
@@ -363,7 +363,7 @@ plot(max_gross_return_y, CDF_EGARCH_b_4_Distortion, '--', 'Color', EGARCH_color,
 hold off;
 xlabel('Gross Return (Zoomed In)');
 ylabel('CDF');
-title(sprintf('b = 4 (Zoomed In, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 1), optimal_beta(t, 1)), 'Interpreter', 'tex');
+title(sprintf('b = 4 (Zoomed In, \\alpha = %.4f, \\beta = %.4f)', optimal_alpha(t, 1), optimal_beta(t, 1)), 'Interpreter', 'tex');
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([0.8, 1.2]);
 grid on;
@@ -376,7 +376,7 @@ plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.
 plot(max_gross_return_y, CDF_EGARCH_b_6_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=6)');
 hold off;
 xlabel('Gross Return (Zoomed In)');
-title(sprintf('b = 6 (Zoomed In, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 2), optimal_beta(t, 2)), 'Interpreter', 'tex');
+title(sprintf('b = 6 (Zoomed In, \\alpha = %.4f, \\beta = %.4f)', optimal_alpha(t, 2), optimal_beta(t, 2)), 'Interpreter', 'tex');
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([0.8, 1.2]);
 grid on;
@@ -389,7 +389,7 @@ plot(max_gross_return_y, CDF_EGARCH, '-', 'Color', EGARCH_color, 'LineWidth', 1.
 plot(max_gross_return_y, CDF_EGARCH_b_8_Distortion, '--', 'Color', EGARCH_color, 'LineWidth', 1.5, 'DisplayName', 'Distorted EGARCH (b=8)');
 hold off;
 xlabel('Gross Return (Zoomed In)');
-title(sprintf('b = 8 (Zoomed In, \\alpha = %.2f, \\beta = %.2f)', optimal_alpha(t, 3), optimal_beta(t, 3)), 'Interpreter', 'tex');
+title(sprintf('b = 8 (Zoomed In, \\alpha = %.4f, \\beta = %.4f)', optimal_alpha(t, 3), optimal_beta(t, 3)), 'Interpreter', 'tex');
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([0.8, 1.2]);
 grid on;
