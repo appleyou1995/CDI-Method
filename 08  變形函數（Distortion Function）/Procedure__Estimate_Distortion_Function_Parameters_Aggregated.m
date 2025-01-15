@@ -101,9 +101,14 @@ for t = 1:length(Target_Date)
 
     original_x = EGARCH_PDF_X(t, :);
     original_f = EGARCH_PDF_Values(t, :);
+    
+    % Interpolate using 'pchip' to avoid oscillation
+    interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'pchip', 0);
 
-    interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'spline', 0);
+    % Ensure interpolated values are non-negative
+    interpolated_f(interpolated_f < 0) = 0;
 
+    % Compute CDF using cumulative integration
     cdf_values = cumtrapz(max_gross_return_y, interpolated_f);
     cdf_values = cdf_values / max(cdf_values);
 
@@ -136,13 +141,15 @@ y_limits = max_gross_return_y(min_idx:max_idx);
 precomputed_data = cell(length(b_values), 1);
 
 for b_idx = 1:length(b_values)
+    
+    b = b_values(b_idx);
     CDF_g_hats = AllR_CDF_Tables{b_idx};    
     all_g_hats = [];
     all_egarch = [];
 
     for t = 1:length(Target_Date)
-        fprintf('Processing b_idx: %d / %d, Target_Date: %d / %d\n', ...
-            b_idx, length(b_values), t, length(Target_Date));
+        fprintf('[ b = %d ] Target_Date: %d\n', ...
+            b, Target_Date(t));
 
         CDF_g_hats_t = CDF_g_hats(t, :);
         CDF_EGARCH_t = EGARCH_CDF_Values(t, :);
@@ -168,23 +175,25 @@ function J = objective_function(params, precomputed, Distortion)
     J = sum((distorted_value - precomputed.all_g_hats).^2);
 end
 
-range_beta  = [0.5, 20];
-range_alpha = [0.5, 20];
+range_beta  = [0.5, 2];
+range_alpha = [0.5, 2];
 
 initial_guess = [1.0, 1.0];
 lb = [range_beta(1), range_alpha(1)];
 ub = [range_beta(2), range_alpha(2)];
 
 for b_idx = 1:length(b_values)
+
+    b = b_values(b_idx);
     precomputed = precomputed_data{b_idx};
 
     options = optimoptions('fmincon', 'Display', 'off', 'Algorithm', 'sqp');
     [optimal_params(b_idx, :), fval] = fmincon(@(params) objective_function(params, precomputed, Distortion), ...
         initial_guess, [], [], [], [], lb, ub, [], options);
 
-    fprintf('b_idx: %d, Optimal beta: %.4f, Optimal alpha: %.4f, Objective: %.4f\n', ...
-        b_idx, optimal_params(b_idx, 1), optimal_params(b_idx, 2), fval);
+    fprintf('[ b = %d ] Optimal alpha: %.4f, Optimal beta: %.4f\n', ...
+        b, optimal_params(b_idx, 2), optimal_params(b_idx, 1));
 end
 
-disp('Optimal parameters for all b_idx:');
+disp('Optimal parameters for all b:');
 disp(array2table(optimal_params, 'VariableNames', {'Beta', 'Alpha'}));
