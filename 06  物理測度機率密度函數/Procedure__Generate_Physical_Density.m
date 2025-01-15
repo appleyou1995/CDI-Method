@@ -131,8 +131,11 @@ for idx_b = 1:length(b_values)
         original_x = Smooth_AllR{1, months{t}};
         original_f = Smooth_AllR_RND{1, months{t}};
         
-        % Use the 'spline' method to interpolate the RND to match max_gross_return_y
-        interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'spline', 0);
+        % Interpolate using 'pchip' to avoid oscillation
+        interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'pchip', 0);
+
+        % Ensure interpolated values are non-negative
+        interpolated_f(interpolated_f < 0) = 0;
 
         % Calculate the physical density for the current month
         current_month_PD = interpolated_f  .* current_g;
@@ -163,5 +166,5 @@ save(fullfile(Path_Output, 'b_8_AllR_PDF.mat'), 'b_8_AllR_PDF');
 Smooth_AllR_Table = zeros(length(months), length(max_gross_return_y));
 
 for t = 1:length(months)
-    Smooth_AllR_Table(t,:)=Smooth_AllR{1, months{t}};
+    Smooth_AllR_Table(t,:) = Smooth_AllR{1, months{t}};
 end
