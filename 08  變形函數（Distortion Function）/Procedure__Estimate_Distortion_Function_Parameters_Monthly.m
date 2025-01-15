@@ -101,9 +101,14 @@ for t = 1:length(Target_Date)
 
     original_x = EGARCH_PDF_X(t, :);
     original_f = EGARCH_PDF_Values(t, :);
+    
+    % Interpolate using 'pchip' to avoid oscillation
+    interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'pchip', 0);
 
-    interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'spline', 0);
+    % Ensure interpolated values are non-negative
+    interpolated_f(interpolated_f < 0) = 0;
 
+    % Compute CDF using cumulative integration
     cdf_values = cumtrapz(max_gross_return_y, interpolated_f);
     cdf_values = cdf_values / max(cdf_values);
 
@@ -116,8 +121,8 @@ clear original_x original_f interpolated_f cdf_values
 
 %% Optimization of Alpha and Beta Parameters with Algorithm Selection
 
-range_alpha = [0.5, 20];
-range_beta  = [0.5, 20];
+range_alpha = [0.5, 2];
+range_beta  = [0.5, 2];
 
 optimal_alpha = zeros(length(Target_Date), length(b_values));
 optimal_beta  = zeros(length(Target_Date), length(b_values));
@@ -132,8 +137,6 @@ for b_idx = 1:length(b_values)
 
     b = b_values(b_idx);
     CDF_data = AllR_CDF_Tables{b_idx};
-
-    fprintf('Processing b = %d...\n', b);
 
     for t = 1:length(Target_Date)
         
@@ -171,7 +174,7 @@ for b_idx = 1:length(b_values)
         optimal_alpha(t, b_idx) = opt_params(1);
         optimal_beta(t, b_idx)  = opt_params(2);
     
-        fprintf('%d - Optimal alpha: %f, beta: %f\n', Target_Date(t), opt_params(1), opt_params(2));
+        fprintf('[ b = %d ] %d - Optimal alpha: %f, beta: %f\n', b, Target_Date(t), opt_params(1), opt_params(2));
     end
 end
 
@@ -185,19 +188,18 @@ function total_integral = compute_total_integral(params, y_limits, max_gross_ret
     alpha = params(1);
     beta = params(2);
 
-    total_integral = 0;
+    % Get the indices of the selected range
+    indices = ismember(max_gross_return_y, y_limits);
 
-    for i = 1:length(y_limits)
-        current_limit = y_limits(i);
-        idx = max_gross_return_y == current_limit;
+    % Extract values within the selected range
+    selected_f_y_g_hats = CDF_g_hats(indices);
+    selected_f_y_EGARCH = CDF_EGARCH(indices);
 
-        selected_f_y_g_hats = CDF_g_hats(idx);
-        selected_f_y_EGARCH = CDF_EGARCH(idx);
+    % Compute distorted values
+    distorted_values = Distortion(selected_f_y_EGARCH, beta, alpha);
 
-        distorted_value = Distortion(selected_f_y_EGARCH, beta, alpha);
-
-        total_integral = total_integral + (selected_f_y_g_hats - distorted_value).^2;
-    end
+    % Compute the total integral
+    total_integral = sum((selected_f_y_g_hats - distorted_values).^2);
 end
 
 
@@ -253,10 +255,49 @@ saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
 
+%% Find the Maximum and Minimum Values of optimal_alpha and optimal_beta with Corresponding Dates
+
+% Flatten the matrices into vectors
+alpha_values = optimal_alpha(:);
+beta_values = optimal_beta(:);
+
+% Find max and min for alpha
+[max_alpha, max_alpha_idx] = max(alpha_values);
+[min_alpha, min_alpha_idx] = min(alpha_values);
+
+% Find max and min for beta
+[max_beta, max_beta_idx] = max(beta_values);
+[min_beta, min_beta_idx] = min(beta_values);
+
+% Convert linear indices to corresponding months (row indices)
+max_alpha_month = mod(max_alpha_idx - 1, 312) + 1;
+min_alpha_month = mod(min_alpha_idx - 1, 312) + 1;
+max_beta_month = mod(max_beta_idx - 1, 312) + 1;
+min_beta_month = mod(min_beta_idx - 1, 312) + 1;
+
+% Get corresponding dates
+max_alpha_date = Target_Date(max_alpha_month);
+min_alpha_date = Target_Date(min_alpha_month);
+max_beta_date = Target_Date(max_beta_month);
+min_beta_date = Target_Date(min_beta_month);
+
+% Display results
+fprintf('Maximum alpha: %.4f, occurs on %d (month %d)\n', max_alpha, max_alpha_date, max_alpha_month);
+fprintf('Minimum alpha: %.4f, occurs on %d (month %d)\n', min_alpha, min_alpha_date, min_alpha_month);
+fprintf('Maximum beta: %.4f, occurs on %d (month %d)\n', max_beta, max_beta_date, max_beta_month);
+fprintf('Minimum beta: %.4f, occurs on %d (month %d)\n', min_beta, min_beta_date, min_beta_month);
+
+clear alpha_values beta_values
+clear max_alpha       max_beta        min_alpha       min_beta
+clear max_alpha_idx   max_beta_idx    min_alpha_idx   min_beta_idx
+clear max_alpha_month max_beta_month  min_alpha_month min_beta_month
+clear max_alpha_date  max_beta_date   min_alpha_date  min_beta_date
+
+
 %% Plot: CDF comparison
 
 % Setting
-t = 264;
+t = 265;
 
 CDF_b_4 = b_4_AllR_CDF(t, :);
 CDF_b_6 = b_6_AllR_CDF(t, :);
