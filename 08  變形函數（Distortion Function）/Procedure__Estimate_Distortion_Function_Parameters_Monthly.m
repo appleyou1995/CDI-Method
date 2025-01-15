@@ -289,11 +289,17 @@ fprintf('Minimum alpha: %.4f, occurs on %d (month %d)\n', min_alpha, min_alpha_d
 fprintf('Maximum beta: %.4f, occurs on %d (month %d)\n', max_beta, max_beta_date, max_beta_month);
 fprintf('Minimum beta: %.4f, occurs on %d (month %d)\n', min_beta, min_beta_date, min_beta_month);
 
-clear alpha_values beta_values
-clear max_alpha       max_beta        min_alpha       min_beta
-clear max_alpha_idx   max_beta_idx    min_alpha_idx   min_beta_idx
-clear max_alpha_month max_beta_month  min_alpha_month min_beta_month
-clear max_alpha_date  max_beta_date   min_alpha_date  min_beta_date
+%%%%%%%%% Record %%%%%%%%%
+% Maximum alpha: 1.6264, occurs on 20070321 (month 135)
+% Minimum alpha: 0.6195, occurs on 20120215 (month 194)
+% Maximum beta: 1.6597, occurs on 20200318 (month 291)
+% Minimum beta: 0.8497, occurs on 20180117 (month 265)
+
+% clear alpha_values beta_values
+% clear max_alpha       max_beta        min_alpha       min_beta
+% clear max_alpha_idx   max_beta_idx    min_alpha_idx   min_beta_idx
+% clear max_alpha_month max_beta_month  min_alpha_month min_beta_month
+% clear max_alpha_date  max_beta_date   min_alpha_date  min_beta_date
 
 
 %% Plot: CDF comparison
@@ -403,3 +409,94 @@ set(gcf, 'Position', [100, 100, 1300, 800]);
 filename = sprintf('CDF_Comparison_%s.png', num2str(Date));
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
+
+
+%%  Plot: Distortion Function for Key Months
+
+key_word   = {'Max alpha',               'Min alpha',                'Max beta',                 'Min beta'};
+key_limit  = [max_alpha_date,             min_alpha_date,             max_beta_date,              min_beta_date];
+key_alpha  = [max_alpha,                  min_alpha,                  alpha_values(max_beta_idx), alpha_values(min_beta_idx)];
+key_beta   = [beta_values(max_alpha_idx), beta_values(min_alpha_idx), max_beta,                   min_beta];
+
+figure;
+layout = tiledlayout(2, 2, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
+for i = 1:4
+    nexttile;
+    x = linspace(0, 1, 100);
+    D = Distortion(x, key_beta(i), key_alpha(i));
+    plot(x, D, 'LineWidth', 1.5);
+    xlabel('x');
+    ylabel('D(x)');
+    title(sprintf('%s ( Date: %d )\n\\alpha = %.4f, \\beta = %.4f', key_word{i}, key_limit(i), key_alpha(i), key_beta(i)));
+    grid on;
+end
+
+sgtitle('Distortion Function for Key Months');
+set(gcf, 'Position', [100, 100, 800, 800]);
+
+% Save the figure
+filename = 'Distortion_Function_Key_Months.png';
+saveas(gcf, fullfile(Path_Output, filename));
+
+clear x D filename
+
+
+%% Plot: Distortion Function for Key Months with Other Parameter Fixed at 1
+
+key_word   = {'Max alpha',   'Min alpha',    'Max beta',     'Min beta'};
+key_limit  = [max_alpha_date, min_alpha_date, max_beta_date, min_beta_date];
+key_alpha  = [max_alpha,      min_alpha,      1,             1];
+key_beta   = [1,              1,              max_beta,      min_beta];
+
+figure;
+layout = tiledlayout(2, 2, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
+for i = 1:4
+    nexttile;
+    x = linspace(0, 1, 100);
+    D = Distortion(x, key_beta(i), key_alpha(i));
+    plot(x, D, 'LineWidth', 1.5);
+    xlabel('x');
+    ylabel('D(x)');
+    title(sprintf('%s ( Date: %d )\n\\alpha = %.4f, \\beta = %.4f', ...
+                  key_word{i}, key_limit(i), key_alpha(i), key_beta(i)));
+    grid on;
+end
+
+sgtitle('Distortion Function for Key Months with Other Parameter Fixed at 1');
+set(gcf, 'Position', [100, 100, 800, 800]);
+
+% Save the figure
+filename = 'Distortion_Function_Key_Months_Fixed.png';
+saveas(gcf, fullfile(Path_Output, filename));
+
+
+%% Plot: Distortion Function for Parameter Limits
+
+key_limit  = {'Upper Bound of \alpha', 'Lower Bound of \alpha', 'Upper Bound of \beta', 'Lower Bound of \beta'};
+key_alpha  = [range_alpha(2),          range_alpha(1),          1,                      1];
+key_beta   = [1,                       1,                       range_beta(2),          range_beta(1)];
+
+figure;
+layout = tiledlayout(2, 2, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
+for i = 1:4
+    nexttile;
+    x = linspace(0, 1, 100);
+    D = Distortion(x, key_beta(i), key_alpha(i));
+    plot(x, D, 'LineWidth', 1.5);
+    xlabel('x');
+    ylabel('D(x)');
+    title(sprintf('%s\n\\alpha = %.1f, \\beta = %.1f', ...
+                  key_limit{i}, key_alpha(i), key_beta(i)));
+    grid on;
+end
+
+sgtitle('Distortion Function for Parameter Limits');
+set(gcf, 'Position', [100, 100, 800, 800]);
+
+% Save the figure
+filename = 'Distortion_Function_Parameter_Limits.png';
+saveas(gcf, fullfile(Path_Output, filename));
+
