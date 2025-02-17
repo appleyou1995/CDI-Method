@@ -190,7 +190,7 @@ for idx = 1:3
     set(gca, 'box', 'on');
     hold off;
 end
-sgtitle('g Function');
+% sgtitle('g Function');
 
 set(gcf, 'Position', [100, 100, 1200, 400]);
 
@@ -263,9 +263,9 @@ for idx = 1:3
 
 end
 
-sgtitle('g Function and Its Derivatives');
+% sgtitle('g Function and Its Derivatives');
 
-set(gcf, 'Position', [100, 100, 1500, 800]);
+set(gcf, 'Position', [100, 100, 1500, 850]);
 
 filename = 'g_Function_and_Its_Derivatives.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -296,7 +296,7 @@ for idx = 1:3
     set(gca, 'box', 'on');
     hold off;
 end
-sgtitle('Absolute Risk Aversion (ARA)');
+% sgtitle('Absolute Risk Aversion (ARA)');
 
 set(gcf, 'Position', [100, 100, 1200, 400]);
 
@@ -329,7 +329,7 @@ for idx = 1:3
     set(gca, 'box', 'on');
     hold off;
 end
-sgtitle('Relative Risk Aversion (RRA)');
+% sgtitle('Relative Risk Aversion (RRA)');
 
 set(gcf, 'Position', [100, 100, 1200, 400]);
 
@@ -362,7 +362,7 @@ for idx = 1:3
     set(gca, 'box', 'on');
     hold off;
 end
-sgtitle('Absolute Prudence (AP)');
+% sgtitle('Absolute Prudence (AP)');
 
 set(gcf, 'Position', [100, 100, 1200, 400]);
 
@@ -395,7 +395,7 @@ for idx = 1:3
     set(gca, 'box', 'on');
     hold off;
 end
-sgtitle('Relative Prudence (RP)');
+% sgtitle('Relative Prudence (RP)');
 
 set(gcf, 'Position', [100, 100, 1200, 400]);
 
@@ -428,7 +428,7 @@ for idx = 1:3
     set(gca, 'box', 'on');
     hold off;
 end
-sgtitle('Absolute Temperance (AT)');
+% sgtitle('Absolute Temperance (AT)');
 
 set(gcf, 'Position', [100, 100, 1200, 400]);
 
@@ -461,7 +461,7 @@ for idx = 1:3
     set(gca, 'box', 'on');
     hold off;
 end
-sgtitle('Relative Temperance (RT)');
+% sgtitle('Relative Temperance (RT)');
 
 set(gcf, 'Position', [100, 100, 1200, 400]);
 
