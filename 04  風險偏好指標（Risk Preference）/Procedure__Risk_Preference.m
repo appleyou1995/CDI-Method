@@ -172,8 +172,10 @@ y_min = -0.1;
 y_max = 1.6;
 
 figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
-    subplot(1,3,idx);
+    nexttile;
 
     hold on;
     fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
@@ -190,8 +192,7 @@ for idx = 1:3
 end
 sgtitle('g Function');
 
-set(gcf, 'Position', [100, 100, 1500, 400]);
-set(gca, 'LooseInset', get(gca,'TightInset'));
+set(gcf, 'Position', [100, 100, 1200, 400]);
 
 % filename = 'g_function.png';
 % saveas(gcf, fullfile(Path_Output, filename));
@@ -201,9 +202,12 @@ set(gca, 'LooseInset', get(gca,'TightInset'));
 %%  g function and its derivatives
 
 figure;
+layout = tiledlayout(3, 4, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
     % Plot g(y)
-    subplot(4,3,idx);
+    nexttile;
+
     hold on;
     plot(y, store_g(idx, :), '.');
     title(['g(y), b = ', num2str((idx + 1) * 2)]);
@@ -216,7 +220,8 @@ for idx = 1:3
     hold off;
 
     % Plot g'(y)
-    subplot(4,3,idx + 3);
+    nexttile;
+
     hold on;
     plot(y, store_g_prime(idx, :), '.');
     title(['g''(y), b = ', num2str((idx + 1) * 2)]);
@@ -229,7 +234,8 @@ for idx = 1:3
     hold off;
 
     % Plot g''(y)
-    subplot(4,3,idx + 6);
+    nexttile;
+
     hold on;
     plot(y, store_g_double_prime(idx, :), '.');
     title(['g''''(y), b = ', num2str((idx + 1) * 2)]);
@@ -242,7 +248,8 @@ for idx = 1:3
     hold off;
 
     % Plot g'''(y)
-    subplot(4,3,idx + 9);
+    nexttile;
+
     hold on;
     plot(y, store_g_triple_prime(idx, :), '.');
     title(['g''''''(y), b = ', num2str((idx + 1) * 2)]);
@@ -253,10 +260,12 @@ for idx = 1:3
     grid on;
     set(gca, 'box', 'on');
     hold off;
+
 end
+
 sgtitle('g Function and Its Derivatives');
 
-set(gcf, 'Position', [100, 100, 1200, 850]);
+set(gcf, 'Position', [100, 100, 1500, 800]);
 
 filename = 'g_Function_and_Its_Derivatives.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -269,8 +278,10 @@ y_min = 0.5;
 y_max = 3.5;
 
 figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
-    subplot(1,3,idx);
+    nexttile;
 
     hold on;
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
@@ -287,8 +298,7 @@ for idx = 1:3
 end
 sgtitle('Absolute Risk Aversion (ARA)');
 
-set(gcf, 'Position', [100, 100, 1500, 400]);
-set(gca, 'LooseInset', get(gca,'TightInset'));
+set(gcf, 'Position', [100, 100, 1200, 400]);
 
 filename = 'Absolute_Risk_Aversion.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -301,8 +311,10 @@ y_min = 0.5;
 y_max = 3.5;
 
 figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
-    subplot(1,3,idx);
+    nexttile;
 
     hold on;
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
@@ -319,8 +331,7 @@ for idx = 1:3
 end
 sgtitle('Relative Risk Aversion (RRA)');
 
-set(gcf, 'Position', [100, 100, 1500, 400]);
-set(gca, 'LooseInset', get(gca,'TightInset'));
+set(gcf, 'Position', [100, 100, 1200, 400]);
 
 filename = 'Relative_Risk_Aversion.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -333,8 +344,10 @@ y_min = 2;
 y_max = 5.5;
 
 figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
-    subplot(1,3,idx);
+    nexttile;
 
     hold on;
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
@@ -351,8 +364,7 @@ for idx = 1:3
 end
 sgtitle('Absolute Prudence (AP)');
 
-set(gcf, 'Position', [100, 100, 1500, 400]);
-set(gca, 'LooseInset', get(gca,'TightInset'));
+set(gcf, 'Position', [100, 100, 1200, 400]);
 
 filename = 'Absolute_Prudence.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -365,8 +377,10 @@ y_min = 2;
 y_max = 5.5;
 
 figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
-    subplot(1,3,idx);
+    nexttile;
 
     hold on;
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
@@ -383,8 +397,7 @@ for idx = 1:3
 end
 sgtitle('Relative Prudence (RP)');
 
-set(gcf, 'Position', [100, 100, 1500, 400]);
-set(gca, 'LooseInset', get(gca,'TightInset'));
+set(gcf, 'Position', [100, 100, 1200, 400]);
 
 filename = 'Relative_Prudence.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -397,8 +410,10 @@ y_min = 2.5;
 y_max = 7;
 
 figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
-    subplot(1,3,idx);
+    nexttile;
 
     hold on;
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
@@ -415,8 +430,7 @@ for idx = 1:3
 end
 sgtitle('Absolute Temperance (AT)');
 
-set(gcf, 'Position', [100, 100, 1500, 400]);
-set(gca, 'LooseInset', get(gca,'TightInset'));
+set(gcf, 'Position', [100, 100, 1200, 400]);
 
 filename = 'Absolute_Temperance.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -429,8 +443,10 @@ y_min = 2.5;
 y_max = 7;
 
 figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for idx = 1:3
-    subplot(1,3,idx);
+    nexttile;
 
     hold on;
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
@@ -447,8 +463,7 @@ for idx = 1:3
 end
 sgtitle('Relative Temperance (RT)');
 
-set(gcf, 'Position', [100, 100, 1500, 400]);
-set(gca, 'LooseInset', get(gca,'TightInset'));
+set(gcf, 'Position', [100, 100, 1200, 400]);
 
 filename = 'Relative_Temperance.png';
 saveas(gcf, fullfile(Path_Output, filename));
