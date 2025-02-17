@@ -108,6 +108,8 @@ y_max = 1.9;
 
 Cubic_BSpline_Basis_Functions_g_combined = figure;
 
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for b = [4, 6, 8]
 
     y_BS = nan(b + 1, length(current_month_y_filtered));
@@ -116,8 +118,7 @@ for b = [4, 6, 8]
     end
     g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
 
-    % Create subplot (2 rows, 3 columns)
-    subplot(1, 3, b/2-1);
+    nexttile;
 
     % Plot cubic B-Spline basis functions
     for i = 1:(b + 1)
@@ -162,8 +163,7 @@ end
 
 sgtitle('Cubic B-Spline with g function value');
 
-set(gcf, 'Position', [50, 50, 1500, 850]);
-set(gca, 'LooseInset', get(gca, 'TightInset'));
+set(gcf, 'Position', [50, 50, 1200, 400]);
 
 filename = 'Cubic_BSpline_Basis_Functions_g_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -177,6 +177,8 @@ y_max = 3;
 
 Cubic_BSpline_Basis_Functions_g_combined_Full = figure;
 
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for b = [4, 6, 8]
 
     y_BS = nan(b + 1, length(current_month_y));
@@ -185,8 +187,7 @@ for b = [4, 6, 8]
     end
     g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
 
-    % Create subplot (2 rows, 3 columns)
-    subplot(1, 3, b/2-1);
+    nexttile;
 
     % Plot cubic B-Spline basis functions
     for i = 1:(b + 1)
@@ -231,8 +232,7 @@ end
 
 sgtitle('Cubic B-Spline with g function (Full range)');
 
-set(gcf, 'Position', [50, 50, 1500, 400]);
-set(gca, 'LooseInset', get(gca, 'TightInset'));
+set(gcf, 'Position', [50, 50, 1200, 400]);
 
 filename = 'Cubic_BSpline_Basis_Functions_g_combined_Full.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -246,6 +246,8 @@ y_max = 1.5;
 
 g_and_SDF_combined = figure;
 
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
 for b = [4, 6, 8]
 
     y_BS = nan(b + 1, length(current_month_y_filtered));
@@ -256,7 +258,7 @@ for b = [4, 6, 8]
 
     SDF = exp(- RF .* TTM) .* (1 ./ g_function_value);
 
-    subplot(2, 3, b-2);
+    nexttile;
 
     plot(current_month_y_filtered, g_function_value, 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
     hold on;
@@ -266,7 +268,7 @@ for b = [4, 6, 8]
     % Set limits
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
-    xticks(x_start:0.02:x_end);
+    xticks(x_start:0.05:x_end);
     yticks(y_min:0.1:y_max);
     grid on;
 
@@ -277,8 +279,7 @@ end
 
 sgtitle('g Function and SDF');
 
-set(gcf, 'Position', [50, 50, 1500, 850]);
-set(gca, 'LooseInset', get(gca, 'TightInset'));
+set(gcf, 'Position', [50, 50, 1200, 400]);
 
 filename = 'g_and_SDF_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
