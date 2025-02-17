@@ -161,7 +161,7 @@ for b = [4, 6, 8]
 
 end
 
-sgtitle('Cubic B-Spline with g function value');
+% sgtitle('Cubic B-Spline with g function value');
 
 set(gcf, 'Position', [50, 50, 1200, 400]);
 
@@ -230,7 +230,7 @@ for b = [4, 6, 8]
 
 end
 
-sgtitle('Cubic B-Spline with g function (Full range)');
+% sgtitle('Cubic B-Spline with g function (Full range)');
 
 set(gcf, 'Position', [50, 50, 1200, 400]);
 
@@ -277,7 +277,7 @@ for b = [4, 6, 8]
 
 end
 
-sgtitle('g Function and SDF');
+% sgtitle('g Function and SDF');
 
 set(gcf, 'Position', [50, 50, 1200, 400]);
 
