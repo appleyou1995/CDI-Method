@@ -172,7 +172,7 @@ y_min = -0.1;
 y_max = 1.6;
 
 figure;
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     nexttile;
@@ -202,7 +202,7 @@ set(gcf, 'Position', [100, 100, 1200, 400]);
 %%  g function and its derivatives
 
 figure;
-layout = tiledlayout(3, 4, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(3, 4, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     % Plot g(y)
@@ -278,7 +278,7 @@ y_min = 0.5;
 y_max = 3.5;
 
 figure;
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     nexttile;
@@ -311,7 +311,7 @@ y_min = 0.5;
 y_max = 3.5;
 
 figure;
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     nexttile;
@@ -344,7 +344,7 @@ y_min = 2;
 y_max = 5.5;
 
 figure;
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     nexttile;
@@ -377,7 +377,7 @@ y_min = 2;
 y_max = 5.5;
 
 figure;
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     nexttile;
@@ -410,7 +410,7 @@ y_min = 2.5;
 y_max = 7;
 
 figure;
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     nexttile;
@@ -443,7 +443,7 @@ y_min = 2.5;
 y_max = 7;
 
 figure;
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
     nexttile;
@@ -467,4 +467,288 @@ set(gcf, 'Position', [100, 100, 1200, 400]);
 
 filename = 'Relative_Temperance.png';
 saveas(gcf, fullfile(Path_Output, filename));
+clear filename
+
+
+%% Plot - Beamer
+
+% Define Color (LaTeX Beamer Theme - Metropolis)
+mBackground = '#FAFAFA';
+
+
+%%  Beamer - g function and its derivatives
+
+figure;
+layout = tiledlayout(3, 4, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    % Plot g(y)
+    nexttile;
+
+    hold on;
+    plot(y, store_g(idx, :), '.');
+    title(['g(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('g(y)');
+    xlim([x_min, x_max]);
+    ylim([0, 1.5]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+
+    % Plot g'(y)
+    nexttile;
+
+    hold on;
+    plot(y, store_g_prime(idx, :), '.');
+    title(['g''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('g''(y)');
+    xlim([x_min, x_max]);
+    ylim([-1.5, 2]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+
+    % Plot g''(y)
+    nexttile;
+
+    hold on;
+    plot(y, store_g_double_prime(idx, :), '.');
+    title(['g''''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('g''''(y)');
+    xlim([x_min, x_max]);
+    ylim([-2, 7]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+
+    % Plot g'''(y)
+    nexttile;
+
+    hold on;
+    plot(y, store_g_triple_prime(idx, :), '.');
+    title(['g''''''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('g''''''(y)');
+    xlim([x_min, x_max]);
+    ylim([-7, -3]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+
+end
+
+% sgtitle('g Function and Its Derivatives');
+
+set(gcf, 'Position', [100, 100, 1500, 850]);
+
+filename = 'Slide_g_Function_and_Its_Derivatives.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename
+
+
+%% Beamer - Absolute Risk Aversion (ARA)
+
+y_min = 0.5;
+y_max = 3.5;
+
+figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    nexttile;
+
+    hold on;
+    % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    plot(y, store_ARA(idx, :), '.');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('ARA(y)');
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+end
+% sgtitle('Absolute Risk Aversion (ARA)');
+
+set(gcf, 'Position', [100, 100, 1200, 400]);
+
+filename = 'Slide_Absolute_Risk_Aversion.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename
+
+
+%% Beamer - Relative Risk Aversion (RRA)
+
+y_min = 0.5;
+y_max = 3.5;
+
+figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    nexttile;
+
+    hold on;
+    % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    plot(y, store_RRA(idx, :), '.');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('RRA(y)');
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+end
+% sgtitle('Relative Risk Aversion (RRA)');
+
+set(gcf, 'Position', [100, 100, 1200, 400]);
+
+filename = 'Slide_Relative_Risk_Aversion.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename
+
+
+%% Beamer - Absolute Prudence (AP)
+
+y_min = 2;
+y_max = 5.5;
+
+figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    nexttile;
+
+    hold on;
+    % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    plot(y, store_AP(idx, :), '.');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('AP(y)');
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+end
+% sgtitle('Absolute Prudence (AP)');
+
+set(gcf, 'Position', [100, 100, 1200, 400]);
+
+filename = 'Slide_Absolute_Prudence.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename
+
+
+%% Beamer - Relative Prudence (RP)
+
+y_min = 2;
+y_max = 5.5;
+
+figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    nexttile;
+
+    hold on;
+    % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    plot(y, store_RP(idx, :), '.');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('RP(y)');
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+end
+% sgtitle('Relative Prudence (RP)');
+
+set(gcf, 'Position', [100, 100, 1200, 400]);
+
+filename = 'Slide_Relative_Prudence.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename
+
+
+%% Beamer - Absolute Temperance (AT)
+
+y_min = 2.5;
+y_max = 7;
+
+figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    nexttile;
+
+    hold on;
+    % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    plot(y, store_AT(idx, :), '.');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('AT(y)');
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+end
+% sgtitle('Absolute Temperance (AT)');
+
+set(gcf, 'Position', [100, 100, 1200, 400]);
+
+filename = 'Slide_Absolute_Temperance.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename
+
+
+%% Beamer - Relative Temperance (RT)
+
+y_min = 2.5;
+y_max = 7;
+
+figure;
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    nexttile;
+
+    hold on;
+    % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    plot(y, store_RT(idx, :), '.');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    xlabel('y');
+    ylabel('RT(y)');
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    grid on;
+    set(gca, 'box', 'on');
+    hold off;
+end
+% sgtitle('Relative Temperance (RT)');
+
+set(gcf, 'Position', [100, 100, 1200, 400]);
+
+filename = 'Slide_Relative_Temperance.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
 clear filename
