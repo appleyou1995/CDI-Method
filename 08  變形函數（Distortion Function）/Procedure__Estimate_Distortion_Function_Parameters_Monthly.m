@@ -212,12 +212,18 @@ function D = Distortion(x, beta, alpha)
 end
 
 
+%% Plot - Beamer
+
+% Define Color (LaTeX Beamer Theme - Metropolis)
+mBackground = '#FAFAFA';
+
+
 %% Plot: Prelec parameters
 
 years_with_months = floor(Target_Date / 10000) + mod(floor(Target_Date / 100), 100) / 12;
 
 figure;
-layout = tiledlayout(2, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(2, 1, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 % Prelec alpha
 nexttile;
@@ -226,8 +232,8 @@ hold on;
 plot(years_with_months, optimal_alpha(:, 2), '--s', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
 plot(years_with_months, optimal_alpha(:, 3), '--d', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
-title('Prelec alpha');
-ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right');
+title('Prelec alpha', 'FontSize', 12);
+ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 12);
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
 ylim([0.55, 1.7]);
@@ -241,9 +247,9 @@ hold on;
 plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
 plot(years_with_months, optimal_beta(:, 3), '--d', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
-title('Prelec beta');
-xlabel('Year');
-ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right');
+title('Prelec beta', 'FontSize', 12);
+xlabel('Year', 'FontSize', 12);
+ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 12);
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
 ylim([0.8, 1.7]);
@@ -254,6 +260,52 @@ set(gcf, 'Position', [50, 50, 1000, 650]);
 
 filename = 'Prelec_Parameters.png';
 saveas(gcf, fullfile(Path_Output, filename));
+clear filename
+
+
+%% Plot - Beamer: Prelec parameters
+
+years_with_months = floor(Target_Date / 10000) + mod(floor(Target_Date / 100), 100) / 12;
+
+figure;
+layout = tiledlayout(2, 1, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+% Prelec alpha
+nexttile;
+plot(years_with_months, optimal_alpha(:, 1), '--o', 'DisplayName', '\alpha (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold on;
+plot(years_with_months, optimal_alpha(:, 2), '--s', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
+plot(years_with_months, optimal_alpha(:, 3), '--d', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold off;
+title('Prelec alpha', 'FontName', 'Fira Sans', 'FontSize', 12);
+ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
+legend('Location', 'northwest', 'Box', 'Off');
+xlim([1996, 2022]);
+ylim([0.55, 1.7]);
+xticks(1996:2:2022);
+grid on;
+
+% Prelec beta
+nexttile;
+plot(years_with_months, optimal_beta(:, 1), '--o', 'DisplayName', '\beta (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold on;
+plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
+plot(years_with_months, optimal_beta(:, 3), '--d', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold off;
+title('Prelec beta', 'FontName', 'Fira Sans', 'FontSize', 12);
+xlabel('Year', 'FontSize', 12);
+ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
+legend('Location', 'northwest', 'Box', 'Off');
+xlim([1996, 2022]);
+ylim([0.8, 1.7]);
+xticks(1996:2:2022);
+grid on;
+
+set(gcf, 'Position', [50, 50, 1000, 650]);
+
+filename = 'Slide_Prelec_Parameters.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
 clear filename
 
 

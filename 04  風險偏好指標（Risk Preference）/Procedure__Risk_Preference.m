@@ -209,7 +209,7 @@ for idx = 1:3
     nexttile;
 
     hold on;
-    plot(y, store_g(idx, :), '.');
+    plot(y, store_g(idx, :), 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
     title(['g(y), b = ', num2str((idx + 1) * 2)]);
     xlabel('y');
     ylabel('g(y)');
@@ -473,6 +473,12 @@ clear filename
 %% Plot - Beamer
 
 % Define Color (LaTeX Beamer Theme - Metropolis)
+mRed        = '#e74c3c';
+mDarkRed    = '#b22222';
+mLightBlue  = '#3279a8';
+mDarkBlue   = '#2c3e50';
+mDarkGreen  = '#4b8b3b';
+mOrange     = '#f39c12';
 mBackground = '#FAFAFA';
 
 
@@ -487,7 +493,7 @@ for idx = 1:3
     nexttile;
 
     hold on;
-    plot(y, store_g(idx, :), '.');
+    plot(y, store_g(idx, :), 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
     title(['g(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
     xlabel('y');
     ylabel('g(y)');
@@ -501,7 +507,7 @@ for idx = 1:3
     nexttile;
 
     hold on;
-    plot(y, store_g_prime(idx, :), '.');
+    plot(y, store_g_prime(idx, :), '.', 'Color', 'b');
     title(['g''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
     xlabel('y');
     ylabel('g''(y)');
@@ -515,7 +521,7 @@ for idx = 1:3
     nexttile;
 
     hold on;
-    plot(y, store_g_double_prime(idx, :), '.');
+    plot(y, store_g_double_prime(idx, :), '.', 'Color', 'b');
     title(['g''''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
     xlabel('y');
     ylabel('g''''(y)');
@@ -529,7 +535,7 @@ for idx = 1:3
     nexttile;
 
     hold on;
-    plot(y, store_g_triple_prime(idx, :), '.');
+    plot(y, store_g_triple_prime(idx, :), '.', 'Color', 'b');
     title(['g''''''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
     xlabel('y');
     ylabel('g''''''(y)');
