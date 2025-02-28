@@ -108,7 +108,7 @@ y_max = 1.9;
 
 Cubic_BSpline_Basis_Functions_g_combined = figure;
 
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for b = [4, 6, 8]
 
@@ -177,7 +177,7 @@ y_max = 3;
 
 Cubic_BSpline_Basis_Functions_g_combined_Full = figure;
 
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for b = [4, 6, 8]
 
@@ -246,7 +246,7 @@ y_max = 1.5;
 
 g_and_SDF_combined = figure;
 
-layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for b = [4, 6, 8]
 
@@ -283,4 +283,213 @@ set(gcf, 'Position', [50, 50, 1200, 400]);
 
 filename = 'g_and_SDF_combined.png';
 saveas(gcf, fullfile(Path_Output, filename));
+clear filename
+
+
+%% Plot - Beamer
+
+% Define Color (LaTeX Beamer Theme - Metropolis)
+
+mRed        = '#e74c3c';
+mDarkRed    = '#b22222';
+mLightBlue  = '#3279a8';
+mDarkBlue   = '#2c3e50';
+mDarkGreen  = '#4b8b3b';
+mOrange     = '#f39c12';
+mBackground = '#FAFAFA';
+
+
+%% Plot - Beamer: (1) Cubic B-Spline with g function value
+
+y_min = 0;
+y_max = 1.9;
+
+Cubic_BSpline_Basis_Functions_g_combined = figure;
+set(gcf, 'Color', mBackground);
+
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+
+for b = [4, 6, 8]
+
+    y_BS = nan(b + 1, length(current_month_y_filtered));
+    for i = 1:(b + 1)
+        y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, current_month_y_filtered);
+    end
+    g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
+
+    nexttile;
+
+    % Plot cubic B-Spline basis functions
+    for i = 1:(b + 1)
+        plot(current_month_y_filtered, y_BS(i, :), 'LineStyle', '-', 'LineWidth', 1);
+        hold on;
+        y_max = max(y_max, max(y_BS(i, :)));
+    end
+
+    % Plot g function value
+    plot(current_month_y_filtered, g_function_value, 'LineStyle', ':', 'LineWidth', 3, 'Color', 'r');
+    y_max = max(y_max, max(g_function_value));
+
+    % Plot vertical lines
+    x_vals = [x_start, x_end];
+    
+    for j = 1:length(x_vals)
+        plot([x_vals(j), x_vals(j)], [y_min, 1.2 * y_max], '--', 'LineWidth', 0.8, 'Color', [0.5 0.5 0.5]);
+    end
+    
+    fill([x_start x_end x_end x_start], ...
+         [y_min y_min y_max y_max], ...
+         fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    % Set limits
+    ylim([y_min, y_max]);
+    xlim([0, 1.2]);
+    grid on;
+
+    % Add title
+    title(['b = ', num2str(b)], 'FontName', 'Fira Sans', 'FontSize', 12);
+
+    % Add Legend
+    type_legend = cell(1, b + 2);
+    for i = 1:(b + 1)
+        type_legend{i} = ['$B^{' num2str(3) '}_{' num2str(i - 1) '} (y)$'];
+    end
+    type_legend{b + 2} = ['$\sum_{i=0}^{' num2str(b) '} \theta_{i} B^{' num2str(3) '}_{i} (y)$'];
+    legend(type_legend, 'Interpreter', 'Latex', ...
+                        'Location', 'northwest', ...
+                        'Box', 'Off', ...
+                        'FontSize', 12, ...
+                        'NumColumns', 2);
+    hold off;
+
+end
+
+% sgtitle('Cubic B-Spline with g function value');
+
+set(gcf, 'Position', [50, 50, 1200, 400], 'Color', mBackground);
+
+filename = 'Slide_Cubic_BSpline_Basis_Functions_g_combined.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename y_min y_max y_BS g_function_value
+
+
+%% Plot - Beamer: (2) Cubic B-Spline with g function value (Full)
+
+y_min = -0.2;
+y_max = 3;
+
+Cubic_BSpline_Basis_Functions_g_combined_Full = figure;
+set(gcf, 'Color', mBackground);
+
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+
+for b = [4, 6, 8]
+
+    y_BS = nan(b + 1, length(current_month_y));
+    for i = 1:(b + 1)
+        y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, current_month_y);
+    end
+    g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
+
+    nexttile;
+
+    % Plot cubic B-Spline basis functions
+    for i = 1:(b + 1)
+        plot(current_month_y, y_BS(i, :), 'LineStyle', '-', 'LineWidth', 1);
+        hold on;
+        y_max = max(y_max, max(y_BS(i, :)));
+    end
+
+    % Plot g function value
+    plot(current_month_y, g_function_value, 'LineStyle', ':', 'LineWidth', 3, 'Color', 'r');
+    y_max = max(y_max, max(g_function_value));
+
+    % Plot vertical lines
+    x_vals = [x_start, x_end];
+    
+    for j = 1:length(x_vals)
+        plot([x_vals(j), x_vals(j)], [y_min, 1.2 * y_max], '--', 'LineWidth', 0.8, 'Color', [0.5 0.5 0.5]);
+    end
+    
+    fill([x_start x_end x_end x_start], ...
+         [y_min y_min y_max y_max], ...
+         fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
+
+    % Set limits
+    ylim([y_min, y_max]);
+    xlim([0, 3]);
+    grid on;
+
+    % Add title
+    title(['b = ', num2str(b)], 'FontName', 'Fira Sans', 'FontSize', 12);
+
+    % Add Legend
+    type_legend = cell(1, b + 2);
+    for i = 1:(b + 1)
+        type_legend{i} = ['$B^{' num2str(3) '}_{' num2str(i - 1) '} (y)$'];
+    end
+    type_legend{b + 2} = ['$\sum_{i=0}^{' num2str(b) '} \theta_{i} B^{' num2str(3) '}_{i} (y)$'];
+    legend(type_legend, 'Interpreter', 'Latex', ...
+                        'Location', 'northwest', ...
+                        'Box', 'Off', ...
+                        'FontSize', 12, ...
+                        'NumColumns', 2);
+    hold off;
+
+end
+
+% sgtitle('Cubic B-Spline with g function (Full range)');
+
+set(gcf, 'Position', [50, 50, 1200, 400], 'Color', mBackground);
+
+filename = 'Slide_Cubic_BSpline_Basis_Functions_g_combined_Full.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename y_min y_max y_BS g_function_value
+
+
+%% Plot - Beamer: (3) g Function and SDF
+
+y_min = 0.6;
+y_max = 1.5;
+
+g_and_SDF_combined = figure;
+set(gcf, 'Color', mBackground);
+
+layout = tiledlayout(1, 3, 'TileSpacing', 'Compact', 'Padding', 'None');
+
+for b = [4, 6, 8]
+
+    y_BS = nan(b + 1, length(current_month_y_filtered));
+    for i = 1:(b + 1)
+        y_BS(i, :) = Bspline_basis_function_value(3, b, min_y, max_y, i, current_month_y_filtered);
+    end
+    g_function_value = sum(transpose(eval(['theta_hat_', num2str(b)])) .* y_BS, 1);
+
+    SDF = exp(- RF .* TTM) .* (1 ./ g_function_value);
+
+    nexttile;
+
+    plot(current_month_y_filtered, g_function_value, 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
+    hold on;
+
+    scatter(current_month_y_filtered, SDF, 'Marker', '.', 'MarkerEdgeColor', 'b');
+
+    % Set limits
+    xlim([x_start, x_end]);
+    ylim([y_min, y_max]);
+    xticks(x_start:0.05:x_end);
+    yticks(y_min:0.1:y_max);
+    grid on;
+
+    title(['b = ', num2str(b)], 'FontName', 'Fira Sans', 'FontSize', 12);
+    legend({'g Function', 'SDF'}, 'Location', 'northeast', 'Box', 'Off', 'FontSize', 12);
+
+end
+
+% sgtitle('g Function and SDF');
+
+set(gcf, 'Position', [50, 50, 1200, 400], 'Color', mBackground);
+
+filename = 'Slide_g_and_SDF_combined.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
 clear filename
