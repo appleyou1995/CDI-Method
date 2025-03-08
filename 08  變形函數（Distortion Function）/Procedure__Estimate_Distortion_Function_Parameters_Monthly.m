@@ -309,6 +309,65 @@ exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current
 clear filename
 
 
+%% Plot - Beamer: Prelec Alpha Parameter
+
+figure;
+layout = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+% Prelec alpha
+nexttile;
+plot(years_with_months, optimal_alpha(:, 1), '--o', 'DisplayName', '\alpha (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold on;
+plot(years_with_months, optimal_alpha(:, 2), '--s', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
+plot(years_with_months, optimal_alpha(:, 3), '--d', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold off;
+% title('Prelec alpha', 'FontName', 'Fira Sans', 'FontSize', 12);
+xlabel('Year', 'FontSize', 12);
+ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
+legend('Location', 'northwest', 'Box', 'Off');
+xlim([1996, 2022]);
+ylim([0.5, 1.8]);
+xticks(1996:2:2022);
+grid on;
+
+set(gcf, 'Position', [50, 50, 1000, 350]);
+
+filename = 'Slide_Prelec_alpha.png';
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
+clear filename
+
+
+%% Plot - Beamer: Prelec Beta Parameter
+
+figure;
+layout = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+% Prelec beta
+nexttile;
+plot(years_with_months, optimal_beta(:, 1), '--o', 'DisplayName', '\beta (b=4)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold on;
+plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
+plot(years_with_months, optimal_beta(:, 3), '--d', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
+hold off;
+% title('Prelec beta', 'FontName', 'Fira Sans', 'FontSize', 12);
+xlabel('Year', 'FontSize', 12);
+ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
+legend('Location', 'northwest', 'Box', 'Off');
+xlim([1996, 2022]);
+ylim([0.8, 1.7]);
+xticks(1996:2:2022);
+grid on;
+
+set(gcf, 'Position', [50, 50, 1000, 350]);
+
+filename_beta = 'Slide_Prelec_beta.png';
+exportgraphics(gcf, fullfile(Path_Output, filename_beta), 'BackgroundColor', 'current');
+
+clear filename_beta;
+
+
 %% Find the Maximum and Minimum Values of optimal_alpha and optimal_beta with Corresponding Dates
 
 % Flatten the matrices into vectors
