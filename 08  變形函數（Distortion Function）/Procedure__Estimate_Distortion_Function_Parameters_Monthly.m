@@ -233,7 +233,7 @@ plot(years_with_months, optimal_alpha(:, 2), '--s', 'DisplayName', '\alpha (b=6)
 plot(years_with_months, optimal_alpha(:, 3), '--d', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
 title('Prelec alpha', 'FontSize', 12);
-ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 12);
+ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
 ylim([0.55, 1.7]);
@@ -248,8 +248,7 @@ plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)',
 plot(years_with_months, optimal_beta(:, 3), '--d', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
 title('Prelec beta', 'FontSize', 12);
-xlabel('Year', 'FontSize', 12);
-ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 12);
+ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
 ylim([0.8, 1.7]);
@@ -294,7 +293,6 @@ plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)',
 plot(years_with_months, optimal_beta(:, 3), '--d', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
 title('Prelec beta', 'FontName', 'Fira Sans', 'FontSize', 12);
-xlabel('Year', 'FontSize', 12);
 ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
@@ -321,10 +319,9 @@ plot(years_with_months, optimal_alpha(:, 1), '--o', 'DisplayName', '\alpha (b=4)
 hold on;
 plot(years_with_months, optimal_alpha(:, 2), '--s', 'DisplayName', '\alpha (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
 plot(years_with_months, optimal_alpha(:, 3), '--d', 'DisplayName', '\alpha (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
-hold off;
+hold off;c
 % title('Prelec alpha', 'FontName', 'Fira Sans', 'FontSize', 12);
-xlabel('Year', 'FontSize', 12);
-ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
+ylabel('\alpha', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 16);
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
 ylim([0.5, 1.8]);
@@ -351,9 +348,11 @@ hold on;
 plot(years_with_months, optimal_beta(:, 2), '--s', 'DisplayName', '\beta (b=6)', 'MarkerSize', 4, 'LineWidth', 0.2);
 plot(years_with_months, optimal_beta(:, 3), '--d', 'DisplayName', '\beta (b=8)', 'MarkerSize', 4, 'LineWidth', 0.2);
 hold off;
+
+set(gca, 'FontSize', 12);
+
 % title('Prelec beta', 'FontName', 'Fira Sans', 'FontSize', 12);
-xlabel('Year', 'FontSize', 12);
-ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 14);
+ylabel('\beta', 'Rotation', 0, 'HorizontalAlignment', 'right', 'FontSize', 16);
 legend('Location', 'northwest', 'Box', 'Off');
 xlim([1996, 2022]);
 ylim([0.8, 1.7]);
