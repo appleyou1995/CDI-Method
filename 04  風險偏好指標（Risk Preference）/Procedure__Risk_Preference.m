@@ -182,8 +182,8 @@ for idx = 1:3
 
     plot(y, store_g(idx, :), '.');
     title(['b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('g(y)');
+    xlabel('$x$', 'Interpreter', 'latex');
+    ylabel('$g(x)$', 'Interpreter', 'latex');
     xlim([x_min, x_max]);
     ylim([y_min, y_max]);
     grid on;
@@ -205,56 +205,56 @@ figure;
 layout = tiledlayout(3, 4, 'TileSpacing', 'Compact', 'Padding', 'None');
 
 for idx = 1:3
-    % Plot g(y)
+    % Plot g(x)
     nexttile;
 
     hold on;
     plot(y, store_g(idx, :), 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
-    title(['g(y), b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('g(y)');
+    title(['$g(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([0, 1.5]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
 
-    % Plot g'(y)
+    % Plot g'(x)
     nexttile;
 
     hold on;
     plot(y, store_g_prime(idx, :), '.');
-    title(['g''(y), b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('g''(y)');
+    title(['$g^\prime(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^\prime(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([-1.5, 2]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
 
-    % Plot g''(y)
+    % Plot g''(x)
     nexttile;
 
     hold on;
     plot(y, store_g_double_prime(idx, :), '.');
-    title(['g''''(y), b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('g''''(y)');
+    title(['$g^{\prime\prime}(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^{\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([-2, 7]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
 
-    % Plot g'''(y)
+    % Plot g'''(x)
     nexttile;
 
     hold on;
     plot(y, store_g_triple_prime(idx, :), '.');
-    title(['g''''''(y), b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('g''''''(y)');
+    title(['$g^{\prime\prime\prime}(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^{\prime\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([-7, -3]);
     grid on;
@@ -265,7 +265,7 @@ end
 
 % sgtitle('g Function and Its Derivatives');
 
-set(gcf, 'Position', [100, 100, 1500, 850]);
+set(gcf, 'Position', [10, 10, 1500, 900]);
 
 filename = 'g_Function_and_Its_Derivatives.png';
 saveas(gcf, fullfile(Path_Output, filename));
@@ -287,9 +287,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_ARA(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('ARA(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{ARA}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -320,9 +320,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_RRA(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('RRA(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{RRA}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -353,9 +353,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_AP(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('AP(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{AP}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -386,9 +386,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_RP(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('RP(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{RP}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -419,9 +419,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_AT(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('AT(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{AT}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -452,9 +452,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_RT(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)]);
-    xlabel('y');
-    ylabel('RT(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{RT}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -489,56 +489,56 @@ layout = tiledlayout(3, 4, 'TileSpacing', 'Compact', 'Padding', 'None');
 set(gcf, 'Color', mBackground);
 
 for idx = 1:3
-    % Plot g(y)
+    % Plot g(x)
     nexttile;
 
     hold on;
     plot(y, store_g(idx, :), 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
-    title(['g(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('g(y)');
+    title(['$g(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([0, 1.5]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
 
-    % Plot g'(y)
+    % Plot g'(x)
     nexttile;
 
     hold on;
-    plot(y, store_g_prime(idx, :), '.', 'Color', 'b');
-    title(['g''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('g''(y)');
+    plot(y, store_g_prime(idx, :), '.');
+    title(['$g^\prime(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^\prime(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([-1.5, 2]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
 
-    % Plot g''(y)
+    % Plot g''(x)
     nexttile;
 
     hold on;
-    plot(y, store_g_double_prime(idx, :), '.', 'Color', 'b');
-    title(['g''''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('g''''(y)');
+    plot(y, store_g_double_prime(idx, :), '.');
+    title(['$g^{\prime\prime}(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^{\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([-2, 7]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
 
-    % Plot g'''(y)
+    % Plot g'''(x)
     nexttile;
 
     hold on;
-    plot(y, store_g_triple_prime(idx, :), '.', 'Color', 'b');
-    title(['g''''''(y), b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('g''''''(y)');
+    plot(y, store_g_triple_prime(idx, :), '.');
+    title(['$g^{\prime\prime\prime}(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^{\prime\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
     ylim([-7, -3]);
     grid on;
@@ -549,7 +549,7 @@ end
 
 % sgtitle('g Function and Its Derivatives');
 
-set(gcf, 'Position', [100, 100, 1500, 850]);
+set(gcf, 'Position', [10, 10, 1500, 900]);
 
 filename = 'Slide_g_Function_and_Its_Derivatives.png';
 exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', 'current');
@@ -572,9 +572,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_ARA(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('ARA(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{ARA}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -606,9 +606,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_RRA(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('RRA(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{RRA}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -640,9 +640,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_AP(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('AP(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{AP}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -674,9 +674,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_RP(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('RP(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{RP}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -708,9 +708,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_AT(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('AT(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{AT}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
@@ -742,9 +742,9 @@ for idx = 1:3
     % fill([x_start x_end x_end x_start], [y_min y_min y_max y_max], fill_color, 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
     plot(y, store_RT(idx, :), '.');
-    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 12);
-    xlabel('y');
-    ylabel('RT(y)');
+    title(['b = ', num2str((idx + 1) * 2)], 'FontName', 'Fira Sans', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$\mathrm{RT}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_start, x_end]);
     ylim([y_min, y_max]);
     grid on;
