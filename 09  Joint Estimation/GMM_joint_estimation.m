@@ -6,14 +6,14 @@ function params_hat = GMM_joint_estimation(Smooth_AllR, Smooth_AllR_RND, Realize
     rng(0);
 
     % Define parameter vector (b+1 for theta, plus 2 for alpha and beta)
-    params0 = rand(1, b + 3);       % First b+1 are theta, last two are alpha and beta
+    params0 = rand(1, b + 3);                                              % First b+1 are theta, last two are alpha and beta
 
     % Optimization options
     options = optimoptions('fmincon', 'Display', 'iter', 'Algorithm', 'sqp');
 
     % Define lower and upper bounds for parameters
-    lb = [-inf(1, b+1), 0, 0];      % No bounds for theta, but alpha > 0, beta > 0
-    ub = [inf(1, b+1), 10, 10];     % No bounds for theta, but reasonable upper limits for alpha, beta
+    lb = [];
+    ub = [];
 
     % Minimize the objective function with nonlinear constraints
     params_hat = fmincon(...
