@@ -23,19 +23,19 @@ function gamma_hat = GMM_power( ...
 
     % 5) 最小化 GMM 目標函數
     gamma_hat = fmincon( ...
-        @(g) GMM_objective_power_only( ...
+        @(g) GMM_objective_power( ...
             g, Smooth_AllR, Smooth_AllR_RND, Realized_Return, RiskFreeRates), ...
         gamma0, [], [], [], [], lb, ub, ...
         [], options);
 end
 
 
-%% ------------------ GMM 目標函式 ------------------ %%
+%% ------------------ GMM 目標函數 ------------------ %%
 
-function J = GMM_objective_power_only( ...
+function J = GMM_objective_power( ...
     gamma, Smooth_AllR, Smooth_AllR_RND, Realized_Return, RiskFreeRates)
 
-    W = eye(3);  % 單位權重矩陣（只做一步 GMM）
+    W = eye(3);
     g = GMM_moment_power(gamma, ...
         Smooth_AllR, Smooth_AllR_RND, Realized_Return, RiskFreeRates);
     
@@ -52,7 +52,7 @@ function g = GMM_moment_power( ...
     months = Smooth_AllR.Properties.VariableNames;
     T = length(months);
 
-    % m = 2 → 3 個 moment
+    % m = 2 (3 個 moment)
     m = 2;
     g = zeros(m+1, 1);
 
@@ -71,7 +71,7 @@ function g = GMM_moment_power( ...
             y_filtered   = R_t_grid(idx_filter);
             RND_filtered = RND_values(idx_filter);
 
-            % 計算 ∫ y^γ f^Q(y) dy，然後除以 Rf_t
+            % 積分
             integrand      = (y_filtered.^gamma) .* RND_filtered;
             integral_value = trapz(y_filtered, integrand);
             g_theta        = integral_value / Rf_t;

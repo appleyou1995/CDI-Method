@@ -22,22 +22,19 @@ function params_hat = GMM_power_distort( ...
     ub = [  10,   10,  Inf];
 
     % 5) 最小化目標函式
-    %    不需要 nonlinear_constraint
     params_hat = fmincon( ...
         @(p) GMM_objective_function_noBspline( ...
             p, Smooth_AllR, Smooth_AllR_RND, Realized_Return, RiskFreeRates), ...
-        params0, [], [], [], [], lb, ub, ...
-        [], ...   % 不帶任何 constraint
-        options);
+        params0, [], [], [], [], lb, ub, [], options);
 end
 
 
-%% ------------------ GMM 目標函式 ------------------ %%
+%% ------------------ GMM 目標函數 ------------------ %%
 
 function J = GMM_objective_function_noBspline( ...
     params, Smooth_AllR, Smooth_AllR_RND, Realized_Return, RiskFreeRates)
 
-    % 權重矩陣：僅做一階段 GMM 時，通常可用單位矩陣
+    % 權重矩陣：
     W = eye(3);
 
     % 計算 moment conditions
@@ -100,7 +97,7 @@ function g = GMM_moment_conditions_noBspline( ...
             moment_sum = moment_sum + (g_theta_distort_inv ^ (j+1));
         end
 
-        % 4.7 取平均後，減去 1/(j+2) (可依你理論需求而修改)
+        % 4.7 取平均後，減去 1/(j+2)
         g(j+1) = moment_sum / T - 1/(j+2);
     end
 end
@@ -109,6 +106,5 @@ end
 %% -------------- Distortion Function Inverse -------------- %%
 
 function D_inv = distortion_inverse(x, alpha, beta)
-    % 沿用之前的定義：D_inv(x) = exp( - ( -log(x) )^(1/alpha ) / beta );
     D_inv = exp( - ( -log(x) ).^(1/alpha ) / beta );
 end
