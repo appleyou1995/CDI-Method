@@ -74,10 +74,10 @@ function g = GMM_moment_power( ...
             % 積分
             integrand      = (y_filtered.^gamma) .* RND_filtered;
             integral_value = trapz(y_filtered, integrand);
-            g_theta        = integral_value / Rf_t;
+            g_param        = integral_value / Rf_t;
 
             % moment: g_theta^(j+1)
-            moment_sum = moment_sum + (g_theta ^ (j+1));
+            moment_sum = moment_sum + (g_param ^ (j+1));
         end
 
         % 平均後減去 1/(j+2)

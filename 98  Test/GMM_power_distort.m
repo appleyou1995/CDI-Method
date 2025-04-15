@@ -88,13 +88,13 @@ function g = GMM_moment_conditions_noBspline( ...
             integral_value = trapz(y_filtered, integrand);
 
             % 4.4 除以對應的 R_{f,t}
-            g_theta = integral_value / Rf_t;
+            g_param = integral_value / Rf_t;
 
             % 4.5 扭曲函數的反函式 D^-1(g_theta)
-            g_theta_distort_inv = distortion_inverse(g_theta, alpha, beta);
+            g_param_distort_inv = distortion_inverse(g_param, alpha, beta);
 
             % 4.6 累加 (g_theta_distort_inv)^(j+1)
-            moment_sum = moment_sum + (g_theta_distort_inv ^ (j+1));
+            moment_sum = moment_sum + (g_param_distort_inv ^ (j+1));
         end
 
         % 4.7 取平均後，減去 1/(j+2)
