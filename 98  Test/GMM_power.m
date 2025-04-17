@@ -80,7 +80,7 @@ function g = GMM_moment_power( ...
             moment_sum = moment_sum + (g_param ^ (j+1));
         end
 
-        % 平均後減去 1/(j+2)
-        g(j+1) = moment_sum / T - 1/(j+2);
+        % 平均後減去 1/(j+2)，再平方
+        g(j+1) = (moment_sum / T - 1/(j+2)) ^ 2;
     end
 end

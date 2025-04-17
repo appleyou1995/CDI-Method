@@ -41,12 +41,11 @@ addpath(Path_Data_98);
 
 Path_Output = fullfile(Path_MainFolder, 'Code', '98  輸出資料');
 
-for b = [4, 6, 8]
-    params_hat = GMM_power(Smooth_AllR, Smooth_AllR_RND, Realized_Return, RF);
-    
-    disp(['b = ' num2str(b) '  Estimated parameters:']);
-    disp(params_hat);
-    
-    save_filename = ['params_hat_power (b=' num2str(b) ').mat'];
-    save(fullfile(Path_Output, save_filename), 'params_hat');
-end
+params_hat = GMM_power(Smooth_AllR, Smooth_AllR_RND, Realized_Return, RF);
+
+disp('Estimated parameters:');
+disp(params_hat);
+
+save_filename = 'params_hat_power.mat';
+save(fullfile(Path_Output, save_filename), 'params_hat');
+
