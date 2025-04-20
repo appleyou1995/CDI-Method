@@ -9,12 +9,17 @@ Realized_Return = readtable(fullfile(Path_Data_01, 'Realized_Return.csv'));
 Risk_Free_Rate = readtable(fullfile(Path_Data_01, 'Risk_Free_Rate.csv'));
 RF = Risk_Free_Rate{:, 3};
 
+years_to_merge = 1996:2008;
+num_months = length(years_to_merge) * 12;
+
+Realized_Return = Realized_Return(1:num_months, :);
+Risk_Free_Rate   = Risk_Free_Rate(1:num_months, :);
+RF = RF(1:num_months);
+
 Path_Data_02 = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
 Smooth_AllK = [];
 Smooth_AllR = [];
 Smooth_AllR_RND = [];
-
-years_to_merge = 1996:2021;
 
 for year = years_to_merge
     
@@ -46,6 +51,6 @@ params_hat = GMM_power(Smooth_AllR, Smooth_AllR_RND, Realized_Return, RF);
 disp('Estimated parameters:');
 disp(params_hat);
 
-save_filename = 'params_hat_power.mat';
-save(fullfile(Path_Output, save_filename), 'params_hat');
+% save_filename = 'params_hat_power.mat';
+% save(fullfile(Path_Output, save_filename), 'params_hat');
 
