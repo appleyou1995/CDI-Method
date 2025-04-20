@@ -97,8 +97,8 @@ function g = GMM_moment_conditions_noBspline( ...
             moment_sum = moment_sum + (g_param_distort_inv ^ (j+1));
         end
 
-        % 4.7 取平均後，減去 1/(j+2)，再平方
-        g(j+1) = (moment_sum / T - 1/(j+2)) ^ 2;
+        % 4.7 取平均後，減去 1/(j+2)
+        g(j+1) = moment_sum / T - 1/(j+2);
     end
 end
 
