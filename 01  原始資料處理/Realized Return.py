@@ -25,16 +25,8 @@ Path_dir = os.path.join(Path_Mac, Path_PaperFolder)
 
 # %%  Input and Output Path
 
-Path_Input  = os.path.join(Path_dir, 'Data/')
-Path_Output = os.path.join(Path_dir, 'Code/01  原始資料處理/')
-
-
-# %%  Load Data
-
-df_Target_Date_Exdate = pd.read_csv(os.path.join(Path_Input, 'Target_AllDate.csv'))
-
-df_Target_Date_Exdate['date'] = pd.to_datetime(df_Target_Date_Exdate['date'], format='%Y%m%d').dt.strftime('%Y-%m-%d')
-df_Target_Date_Exdate['exdate'] = pd.to_datetime(df_Target_Date_Exdate['exdate'], format='%Y%m%d').dt.strftime('%Y-%m-%d')
+Path_Input  = os.path.join(Path_dir, 'Code/01  輸出資料/')
+Path_Output = os.path.join(Path_dir, 'Code/01  輸出資料/')
 
 
 # %%  Connect to WRDS & Get the properties of database
@@ -70,6 +62,8 @@ conn.close()
 df_optionm_div['date'] = pd.to_datetime(df_optionm_div['date'])
 df_optionm_div['expiration'] = pd.to_datetime(df_optionm_div['expiration'])
 
+df_optionm_div['TTM'] = (df_optionm_div['expiration'] - df_optionm_div['date']).dt.days
+
 df_optionm_div['date_day'] = pd.to_datetime(df_optionm_div['date']).dt.day_name()
 df_optionm_div['exdate_day'] = pd.to_datetime(df_optionm_div['expiration']).dt.day_name()
 
@@ -100,41 +94,84 @@ df_SP500['caldt'] = df_SP500['caldt'].dt.strftime('%Y-%m-%d')
 conn.close()
 
 
+# %%  Load Target Date & Exdate Data
+
+# TTM_list = [30, 60, 90, 180]
+TTM = 180
+
+filename = f'Hsieh_TTM_{TTM}.csv'
+
+df_Target_Date_Exdate = pd.read_csv(os.path.join(Path_Input, filename))
+
+df_Target_Date_Exdate['date'] = pd.to_datetime(df_Target_Date_Exdate['date'], format='%Y%m%d').dt.strftime('%Y-%m-%d')
+df_Target_Date_Exdate['exdate'] = pd.to_datetime(df_Target_Date_Exdate['exdate'], format='%Y%m%d').dt.strftime('%Y-%m-%d')
+
+
 # %%  Adding missing dates from df_Target_Date_Exdate['exdate'] to df_SP500['caldt']
 ####  and filling NaN values with the previous row's values
 
-missing_exdates = df_Target_Date_Exdate[~df_Target_Date_Exdate['exdate'].isin(df_SP500['caldt'])]['exdate']
+df_SP500_copy = df_SP500.copy()
+
+missing_exdates = df_Target_Date_Exdate[~df_Target_Date_Exdate['exdate'].isin(df_SP500_copy['caldt'])]['exdate']
 new_rows = pd.DataFrame({'caldt': missing_exdates})
 
-for col in df_SP500.columns:
+for col in df_SP500_copy.columns:
     if col != 'caldt':
         new_rows[col] = np.nan
 
-df_SP500 = pd.concat([df_SP500, new_rows], ignore_index=True)
-df_SP500 = df_SP500.sort_values(by='caldt').reset_index(drop=True)
-df_SP500.fillna(method='ffill', inplace=True)
+df_SP500_copy = pd.concat([df_SP500_copy, new_rows], ignore_index=True)
+df_SP500_copy = df_SP500_copy.sort_values(by='caldt').reset_index(drop=True)
+df_SP500_copy.fillna(method='ffill', inplace=True)
 
 
-# %%  Merge
+# %%  Merge: TTM_list = [30]
 
-df_merged = pd.merge(df_Target_Date_Exdate, df_SP500[['caldt', 'spindx']], left_on='date', right_on='caldt', how='left')
+# df_merged = pd.merge(df_Target_Date_Exdate, df_SP500_copy[['caldt', 'spindx']], left_on='date', right_on='caldt', how='left')
+# df_merged.rename(columns={'spindx': 'date_spindx'}, inplace=True)
+# df_merged.drop(columns=['caldt'], inplace=True)
+
+# df_merged = pd.merge(df_merged, df_SP500_copy[['caldt', 'spindx']], left_on='exdate', right_on='caldt', how='left')
+# df_merged.rename(columns={'spindx': 'exdate_spindx'}, inplace=True)
+# df_merged.drop(columns=['caldt'], inplace=True)
+
+# df_merged = pd.merge(df_merged, df_optionm_div, how='left', 
+#                      left_on=['date', 'exdate'], 
+#                      right_on=['date', 'expiration'])
+
+# row_diff = len(df_merged) - len(df_Target_Date_Exdate)
+
+# print(f"Number of missing values in 'dividend_yield': {df_merged['dividend_yield'].isna().sum()}")
+# print(f"Row difference between df_merged and df_Target_Date_Exdate: {row_diff} rows")
+
+
+# %%  Merge: TTM_list = [60, 90, 180]
+
+df_merged = pd.merge(df_Target_Date_Exdate, df_SP500_copy[['caldt', 'spindx']], left_on='date', right_on='caldt', how='left')
 df_merged.rename(columns={'spindx': 'date_spindx'}, inplace=True)
 df_merged.drop(columns=['caldt'], inplace=True)
 
-df_merged = pd.merge(df_merged, df_SP500[['caldt', 'spindx']], left_on='exdate', right_on='caldt', how='left')
+df_merged = pd.merge(df_merged, df_SP500_copy[['caldt', 'spindx']], left_on='exdate', right_on='caldt', how='left')
 df_merged.rename(columns={'spindx': 'exdate_spindx'}, inplace=True)
 df_merged.drop(columns=['caldt'], inplace=True)
 
-df_merged = pd.merge(df_merged, df_optionm_div, how='left', 
-                     left_on=['date', 'exdate'], 
-                     right_on=['date', 'expiration'])
+df_optionm_filtered = df_optionm_div[(df_optionm_div['TTM'] >= TTM - 4) & (df_optionm_div['TTM'] <= TTM + 0)].copy()
+
+duplicated_dates = df_optionm_filtered['date'][df_optionm_filtered['date'].duplicated()].unique()
+df_duplicates = df_optionm_filtered[df_optionm_filtered['date'].isin(duplicated_dates)]
+
+df_merged = pd.merge(df_merged, df_optionm_filtered, how='left', on='date')
+row_diff = len(df_merged) - len(df_Target_Date_Exdate)
+
+print(f"Number of missing values in 'dividend_yield': {df_merged['dividend_yield'].isna().sum()}")
+print(f"Row difference between df_merged and df_Target_Date_Exdate: {row_diff} rows")
 
 
 # %%  Calculate Realized Return
 
-TTM = 29 /365
+TTM_mode = df_merged['TTM'].mode().iloc[0]
+TTM_Annualized = (TTM_mode - 1) /365
 
-df_merged['S0_ADJ'] = np.exp(- df_merged['dividend_yield'] * TTM) * df_merged['date_spindx']
+df_merged['S0_ADJ'] = np.exp(- df_merged['dividend_yield'] * TTM_Annualized) * df_merged['date_spindx']
 df_merged['realized_ret'] = df_merged['exdate_spindx'] / df_merged['S0_ADJ']
 
 
@@ -142,7 +179,9 @@ df_merged['realized_ret'] = df_merged['exdate_spindx'] / df_merged['S0_ADJ']
 
 df_output = df_merged[['date', 'realized_ret']]
 df_output['date'] = df_merged['date'].str.replace('-', '')
-df_output.to_csv(os.path.join(Path_Output, 'Realized_Return.csv'), index=False)
+
+output_filename = f'Realized_Return_TTM_{TTM}.csv'
+df_output.to_csv(os.path.join(Path_Output, output_filename), index=False)
 
 
 
