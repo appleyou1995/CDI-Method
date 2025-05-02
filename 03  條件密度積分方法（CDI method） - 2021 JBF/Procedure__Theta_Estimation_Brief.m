@@ -4,8 +4,13 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 
 %% Load the data
 
-Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  原始資料處理');
-Realized_Return = readtable(fullfile(Path_Data_01, 'Realized_Return.csv'));
+% Target_TTM = [30, 60, 90, 180]
+Target_TTM = 60;
+
+Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  輸出資料');
+FileName = ['Realized_Return_TTM_', num2str(Target_TTM), '.csv'];
+Realized_Return = readtable(fullfile(Path_Data_01, FileName));
+clear FileName
 
 Path_Data_02 = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
 Smooth_AllK = [];
@@ -16,7 +21,7 @@ years_to_merge = 1996:2021;
 
 for year = years_to_merge
     
-    input_filename = fullfile(Path_Data_02, sprintf('Output_Tables_%d.mat', year));
+    input_filename = fullfile(Path_Data_02, sprintf('TTM_%d_RND_Tables_%d.mat', Target_TTM, year));
         
     if exist(input_filename, 'file')
         data = load(input_filename);
@@ -53,12 +58,12 @@ addpath(Path_Data_03);
 
 Path_Output = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
 
-for b = 3:8
+for b = [4, 6, 8]
     theta_hat = GMM_theta_estimation(Smooth_AllR, Smooth_AllR_RND, Realized_Return, b, min_knot, max_knot);
     
     disp(['b = ' num2str(b) '  Estimated parameters:']);
     disp(theta_hat);
     
-    save_filename = ['ceil_theta_hat (b=' num2str(b) ').mat'];
+    save_filename = ['TTM_' num2str(Target_TTM) '_theta_hat (b=' num2str(b) ').mat'];
     save(fullfile(Path_Output, save_filename), 'theta_hat');
 end
