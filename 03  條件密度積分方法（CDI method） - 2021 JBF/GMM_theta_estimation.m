@@ -64,31 +64,65 @@ function g = GMM_moment_conditions(theta, Smooth_AllR, Smooth_AllR_RND, Realized
 
     for j = 1:(m + 1)
         moment_sum = 0;
+        valid_T = 0;  % 記錄有效月份數
 
         for t = 1:T
+            try
+                current_month_realized_ret = Realized_Return{t, 2};
+                if isnan(current_month_realized_ret)
+                    continue
+                end
 
-            current_month_realized_ret = Realized_Return{t, 2};
+                current_month_y = Smooth_AllR{1, months{t}}(:);  % 強制轉 column vector
+                current_month_RND = Smooth_AllR_RND{1, months{t}}(:);
 
-            current_month_y = Smooth_AllR{1, months{t}};
-            current_month_RND = Smooth_AllR_RND{1, months{t}};
+                idx = current_month_y <= current_month_realized_ret;
+                if sum(idx) == 0
+                    continue
+                end
 
-            current_month_y_filtered = current_month_y(current_month_y <= current_month_realized_ret);
-            filtered_size = length(current_month_y_filtered);
-            current_month_RND_filtered = current_month_RND(1:filtered_size);
+                current_month_y_filtered = current_month_y(idx);
+                current_month_RND_filtered = current_month_RND(idx);
 
-            g_theta = 0;
+                if length(current_month_y_filtered) ~= length(current_month_RND_filtered)
+                    continue
+                end
 
-            for i = 1:(b + 1)
-                B_values = Bspline_basis_function_value(3, b, min_knot, max_knot, i, current_month_y_filtered);
-                
-                integral = trapz(current_month_y_filtered, B_values .* current_month_RND_filtered);            
-                g_theta = g_theta + theta(i) * integral;
+                g_theta = 0;
+
+                for i = 1:(b + 1)
+                    B_values = Bspline_basis_function_value(3, b, min_knot, max_knot, i, current_month_y_filtered);
+                    if any(isnan(B_values))
+                        warning('NaN in B_values at t=%d, month=%s', t, months{t});
+                        g_theta = NaN;
+                        break
+                    end
+                    integral = trapz(current_month_y_filtered, B_values .* current_month_RND_filtered);
+                    if isnan(integral) || isinf(integral)
+                        g_theta = NaN;
+                        break
+                    end
+                    g_theta = g_theta + theta(i) * integral;
+                end
+
+                if isnan(g_theta) || isinf(g_theta)
+                    continue
+                end
+
+                moment_sum = moment_sum + g_theta^j;
+                valid_T = valid_T + 1;
+
+            catch ME
+                warning('Error at t=%d (%s): %s', t, months{t}, ME.message);
+                continue
             end
-
-            moment_sum = moment_sum + g_theta ^ j;
         end
 
-        g(j) = moment_sum / T - 1 / (j + 1);
+        if valid_T > 0
+            g(j) = moment_sum / valid_T - 1 / (j + 1);
+        else
+            g(j) = NaN;  % 若完全沒有有效月份，就直接報 NaN
+        end
     end
 end
 
@@ -96,36 +130,57 @@ end
 %% Local Function: nonlinear_constraint
 
 function [c, ceq] = nonlinear_constraint(theta, Smooth_AllR, Realized_Return, b, min_knot, max_knot)
-    
-    % Initialize the constraint output
+
     months = Smooth_AllR.Properties.VariableNames;
     T = length(months);
-    c = zeros(T, 1);                                                       % Initialize empty inequality constraints
-    ceq = [];                                                              % No equality constraints
+    c = zeros(T, 1);
+    ceq = [];
 
-    % Loop through each month to calculate g_theta and set constraints
+    epsilon = 1e-6;
+
     for t = 1:T
-        current_month_realized_ret = Realized_Return{t, 2};
-        current_month_y = Smooth_AllR{1, months{t}};
+        try
+            current_month_realized_ret = Realized_Return{t, 2};
+            if isnan(current_month_realized_ret)
+                c(t) = 0;  % 不加入限制
+                continue
+            end
 
-        % Filter values based on current month realized return
-        current_month_y_filtered = current_month_y(current_month_y <= current_month_realized_ret);
+            current_month_y = Smooth_AllR{1, months{t}}(:);  % 強制 column vector
+            idx = current_month_y <= current_month_realized_ret;
+            if sum(idx) == 0
+                c(t) = 0;  % 無資料，略過
+                continue
+            end
 
-        % Initialize g_theta as a zero vector with the same length as B_values
-        g_theta = zeros(1, length(current_month_y_filtered));
+            current_month_y_filtered = current_month_y(idx);
 
-        % Calculate g_theta as a linear combination of B-spline basis values
-        for i = 1:(b + 1)
-            B_values = Bspline_basis_function_value(3, b, min_knot, max_knot, i, current_month_y_filtered);
-            g_theta  = g_theta + theta(i) * B_values;
+            g_theta = zeros(length(current_month_y_filtered), 1);
+
+            for i = 1:(b + 1)
+                B_values = Bspline_basis_function_value(3, b, min_knot, max_knot, i, current_month_y_filtered);
+                if any(isnan(B_values))
+                    warning('NaN in B_values at t=%d, month=%s', t, months{t});
+                    g_theta = NaN;
+                    break
+                end
+                g_theta = g_theta + theta(i) * B_values;
+            end
+
+            if any(isnan(g_theta)) || any(isinf(g_theta))
+                c(t) = 0;  % 不加限制
+                continue
+            end
+
+            % Constraint: g_theta ≥ ε  →  min(g_theta) - ε ≥ 0
+            c(t) = -(min(g_theta) - epsilon);
+
+        catch ME
+            warning('Error in constraint at t=%d (%s): %s', t, months{t}, ME.message);
+            c(t) = 0;  % 出錯時略過該限制
+            continue
         end
-
-        % Add the constraint  g_theta >= 0 
-        % rewrite as          min(g_theta) >= epsilon      to avoid strict zero constraints
-        % rewrite as          min(g_theta) - epsilon >= 0
-        % rewrite as        -(min(g_theta) - epsilon) =< 0
-        epsilon = 1e-6;                                                    % Small tolerance to ensure numerical stability
-        c(t) = -(min(g_theta) - epsilon);                                  % Store constraint for month t
     end
 end
+
 

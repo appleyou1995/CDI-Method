@@ -5,7 +5,7 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 %% Load the data
 
 % Target_TTM = [30, 60, 90, 180]
-Target_TTM = 60;
+Target_TTM = 90;
 
 Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  輸出資料');
 FileName = ['Realized_Return_TTM_', num2str(Target_TTM), '.csv'];
