@@ -4,14 +4,18 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 
 %% Load the data
 
+% Target_TTM = [30, 60, 90, 180]
+Target_TTM = 180;
+
 % Risk-Free Rate  [1. Date (YYYYMMDD) | 2. TTM (Days) | 3. Risk-Free Rate (Annualized)]
 Path_Data = fullfile(Path_MainFolder, 'Data');
 Data_RF = load(fullfile(Path_Data, 'RiskFreeRate19962022.txt'));
 
 % Realized Return
-Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  原始資料處理');
-Realized_Return = readtable(fullfile(Path_Data_01, 'Realized_Return.csv'));
-Risk_Free_Rate = readtable(fullfile(Path_Data_01, 'Risk_Free_Rate.csv'));
+Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  輸出資料');
+FileName = ['Realized_Return_TTM_', num2str(Target_TTM), '.csv'];
+Realized_Return = readtable(fullfile(Path_Data_01, FileName));
+clear FileName
 
 % RND
 Path_Data_02 = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
@@ -23,7 +27,7 @@ years_to_merge = 1996:2021;
 
 for year = years_to_merge
     
-    input_filename = fullfile(Path_Data_02, sprintf('Output_Tables_%d.mat', year));
+    input_filename = fullfile(Path_Data_02, sprintf('TTM_%d_RND_Tables_%d.mat', Target_TTM, year));
         
     if exist(input_filename, 'file')
         data = load(input_filename);
@@ -38,7 +42,7 @@ end
 
 % Estimated theta
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
-mat_files = dir(fullfile(Path_Data_03, 'theta_hat (b=*.mat'));
+mat_files = dir(fullfile(Path_Data_03, sprintf('TTM_%d_theta_hat (b=*.mat', Target_TTM)));
 
 for k = 1:length(mat_files)
     file_path = fullfile(Path_Data_03, mat_files(k).name);
@@ -70,7 +74,7 @@ clear Aggregate_Smooth_AllR
 %% Setting
 
 % Specify the month to plot
-t = 291;
+[~, t] = max(Realized_Return.realized_ret);
 
 months = Smooth_AllR.Properties.VariableNames;
 
@@ -87,7 +91,7 @@ store_g_double_prime = nan(3, length(current_month_y));
 store_g_triple_prime = nan(3, length(current_month_y));
 
 
-%% 
+%% Calculate g function and its derivatives
 
 for b = [4, 6, 8]
 
@@ -126,7 +130,7 @@ for b = [4, 6, 8]
 end
 
 
-%%  g function and its derivatives
+%%  Plot g function and its derivatives
 
 x_min = 0;
 x_max = 3;
@@ -197,14 +201,14 @@ end
 
 set(gcf, 'Position', [10, 10, 1500, 900]);
 
-filename = 'g_Function_and_Its_Derivatives_Full.png';
+filename = sprintf('TTM_%d_g_Function_and_Its_Derivatives_Full.png', Target_TTM);
 saveas(gcf, fullfile(Path_Output, filename));
 clear filename
 
 
 %% Output to xlsx
 
-xlsxFilename = 'g_Function_and_Its_Derivatives_1996_2021.xlsx';
+xlsxFilename = sprintf('TTM_%d_g_Function_and_Its_Derivatives_1996_2021.xlsx', Target_TTM);
 outputFile = fullfile(Path_Output, xlsxFilename);
 
 writematrix(y.',                   outputFile, 'Sheet', 'gross return');
