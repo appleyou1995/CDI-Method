@@ -1,0 +1,6 @@
+~$*.xls
+~$*.xlsx
+
+*.tmp
+*.bak
+*.log
