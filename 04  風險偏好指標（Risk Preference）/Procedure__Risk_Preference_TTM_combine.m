@@ -85,6 +85,9 @@ clear ARA RRA AP RP AT RT
 x_start = 0.8;
 x_end = 1.2;
 
+Path_Data_04 = fullfile(Path_MainFolder, 'Code', '04  風險偏好指標（Risk Preference）');
+addpath(Path_Data_04);
+
 
 %% Plot
 
@@ -106,3 +109,23 @@ plot_risk_metric_by_TTM(RiskMetrics, 'AT', '$\mathrm{AT}(x)$', ...
 plot_risk_metric_by_TTM(RiskMetrics, 'RT', '$\mathrm{RT}(x)$', ...
     3.0, 6.5, 'Relative_Temperance', Path_Output, x_start, x_end);
 
+
+%% Plot (Beamer)
+
+plot_risk_metric_by_TTM_beamer(RiskMetrics, 'ARA', '$\mathrm{ARA}(x)$', ...
+    0.5, 3.5, 'Absolute_Risk_Aversion', Path_Output, x_start, x_end);
+
+plot_risk_metric_by_TTM_beamer(RiskMetrics, 'RRA', '$\mathrm{RRA}(x)$', ...
+    1.0, 3.0, 'Relative_Risk_Aversion', Path_Output, x_start, x_end);
+
+plot_risk_metric_by_TTM_beamer(RiskMetrics, 'AP', '$\mathrm{AP}(x)$', ...
+    2.5, 6.0, 'Absolute_Prudence', Path_Output, x_start, x_end);
+
+plot_risk_metric_by_TTM_beamer(RiskMetrics, 'RP', '$\mathrm{RP}(x)$', ...
+    3.0, 5.0, 'Relative_Prudence', Path_Output, x_start, x_end);
+
+plot_risk_metric_by_TTM_beamer(RiskMetrics, 'AT', '$\mathrm{AT}(x)$', ...
+    2.5, 8.0, 'Absolute_Temperance', Path_Output, x_start, x_end);
+
+plot_risk_metric_by_TTM_beamer(RiskMetrics, 'RT', '$\mathrm{RT}(x)$', ...
+    3.0, 6.5, 'Relative_Temperance', Path_Output, x_start, x_end);
