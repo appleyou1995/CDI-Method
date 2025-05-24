@@ -42,8 +42,9 @@ function plot_risk_metric_by_TTM_beamer(RiskMetrics, metric_name, y_label, y_min
 
     legend(arrayfun(@(r) sprintf('TTM = %d', r.TTM), RiskMetrics, 'UniformOutput', false), ...
            'Location', 'bestoutside');
+    legend boxoff
 
     set(gcf, 'Position', [200, 200, 1200, 380]);
     filename = sprintf('Slide_RiskMetric_MultiTTM_%s.png', filename_base);
-    saveas(gcf, fullfile(Path_Output, filename));
+    exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', mBackground);
 end
