@@ -7,17 +7,20 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 % Target_TTM = [30, 60, 90, 180]
 Target_TTM = 30;
 
+years_to_merge = 2003:2021;
+
 Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  輸出資料');
 FileName = ['Realized_Return_TTM_', num2str(Target_TTM), '.csv'];
 Realized_Return = readtable(fullfile(Path_Data_01, FileName));
-clear FileName
+years = floor(Realized_Return.date / 10000);
+idx = ismember(years, years_to_merge);
+Realized_Return = Realized_Return(idx, :);
+clear FileName years idx
 
 Path_Data_02 = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
 Smooth_AllK = [];
 Smooth_AllR = [];
 Smooth_AllR_RND = [];
-
-years_to_merge = 1996:2021;
 
 for year = years_to_merge
     
