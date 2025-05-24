@@ -5,7 +5,7 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 %% Load the data
 
 % Target_TTM = [30, 60, 90, 180]
-Target_TTM = 180;
+Target_TTM = 90;
 
 % Risk-Free Rate  [1. Date (YYYYMMDD) | 2. TTM (Days) | 3. Risk-Free Rate (Annualized)]
 Path_Data = fullfile(Path_MainFolder, 'Data');
@@ -176,7 +176,7 @@ for idx = 1:3
     xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
     ylabel('$g^{\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
-    ylim([-4, 7]);
+    ylim([-4.5, 8]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
@@ -190,7 +190,7 @@ for idx = 1:3
     xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
     ylabel('$g^{\prime\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
-    ylim([-7, 3]);
+    ylim([-9, 3]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
@@ -202,7 +202,87 @@ end
 set(gcf, 'Position', [10, 10, 1500, 900]);
 
 filename = sprintf('TTM_%d_g_Function_and_Its_Derivatives_Full.png', Target_TTM);
-saveas(gcf, fullfile(Path_Output, filename));
+% saveas(gcf, fullfile(Path_Output, filename));
+clear filename
+
+
+%%  Plot g function and its derivatives (Beamer)
+
+x_min = 0;
+x_max = 3;
+
+% Define Color (LaTeX Beamer Theme - Metropolis)
+mBackground = '#FAFAFA';
+
+figure;
+layout = tiledlayout(3, 4, 'TileSpacing', 'Compact', 'Padding', 'None');
+set(gcf, 'Color', mBackground);
+
+for idx = 1:3
+    % Plot g(x)
+    nexttile;
+
+    hold on;
+    plot(y, store_g(idx, :), 'LineStyle', '--', 'LineWidth', 2, 'Color', 'r');
+    title(['$g(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g(x)$', 'Interpreter', 'latex', 'FontSize', 14);
+    xlim([x_min, x_max]);
+    ylim([-0.1, 2.1]);
+    grid on;
+    set(gca, 'box', 'on', 'FontName', 'Times New Roman', 'FontSize', 12);
+    hold off;
+
+    % Plot g'(x)
+    nexttile;
+
+    hold on;
+    plot(y, store_g_prime(idx, :), '.');
+    title(['$g^\prime(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^\prime(x)$', 'Interpreter', 'latex', 'FontSize', 14);
+    xlim([x_min, x_max]);
+    ylim([-3, 2.5]);
+    grid on;
+    set(gca, 'box', 'on', 'FontName', 'Times New Roman', 'FontSize', 12);
+    hold off;
+
+    % Plot g''(x)
+    nexttile;
+
+    hold on;
+    plot(y, store_g_double_prime(idx, :), '.');
+    title(['$g^{\prime\prime}(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^{\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
+    xlim([x_min, x_max]);
+    ylim([-4.5, 8]);
+    grid on;
+    set(gca, 'box', 'on', 'FontName', 'Times New Roman', 'FontSize', 12);
+    hold off;
+
+    % Plot g'''(x)
+    nexttile;
+
+    hold on;
+    plot(y, store_g_triple_prime(idx, :), '.');
+    title(['$g^{\prime\prime\prime}(x), b = ', num2str((idx + 1) * 2), '$'], 'Interpreter', 'latex', 'FontSize', 14);
+    xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
+    ylabel('$g^{\prime\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
+    xlim([x_min, x_max]);
+    ylim([-9, 3]);
+    grid on;
+    set(gca, 'box', 'on', 'FontName', 'Times New Roman', 'FontSize', 12);
+    hold off;
+
+end
+
+% sgtitle('g Function and Its Derivatives');
+
+set(gcf, 'Position', [10, 10, 1500, 900]);
+
+filename = sprintf('Slide_TTM_%d_g_Function_and_Its_Derivatives_Full.png', Target_TTM);
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', mBackground);
 clear filename
 
 
