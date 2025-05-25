@@ -1,6 +1,7 @@
 clear; clc
 Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文著作\CDI Method';
-Path_Data_04 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - Time varying');
+Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - Time varying');
+Path_Output = fullfile(Path_MainFolder, 'Code', '04  輸出資料 - Time varying');
 
 
 %% General Setting
@@ -43,7 +44,7 @@ clear years_to_merge year input_filename data
 %% Load data: (3) Estimated theta
 
 pattern = sprintf('Rolling_theta_TTM=%d_b=%d_(\\d{8})\\.mat', Target_TTM, Target_b);
-file_list = dir(fullfile(Path_Data_04, '*.mat'));
+file_list = dir(fullfile(Path_Data_03, '*.mat'));
 
 % Initialize storage
 theta_hat = {};
@@ -59,7 +60,7 @@ for k = 1:length(file_list)
         date_val = str2double(date_str);
 
         % Load .mat file
-        data = load(fullfile(Path_Data_04, file_list(k).name));
+        data = load(fullfile(Path_Data_03, file_list(k).name));
 
         % Store in cell array: first column is date, second column is theta_hat vector
         theta_hat{row, 1} = date_val;
@@ -132,15 +133,16 @@ x_values = max_month_y;  % 1×30000 vector
 g_values = g_function_table{:, 2:end};  % Drop the Date column, retain g(x) only
 
 % Plot
-figure;
+layout = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'None');
+nexttile;
 hold on;
 plot(x_values, g_values', 'Color', [0.2, 0.5, 0.8, 0.5]);
 plot(x_values, mean(g_values, 1), 'k-', 'LineWidth', 3);   % Add mean g(x) line (black)
 hold off;
 
 % Formatting
-title(['$g(x)$ Functions over Time (TTM = ', num2str(Target_TTM), ', b = ', num2str(Target_b), ')'], ...
-    'Interpreter', 'latex', 'FontSize', 16);
+title(['TTM = ', num2str(Target_TTM), ', b = ', num2str(Target_b)], ...
+       'FontName', 'Times New Roman', 'FontSize', 18);
 xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
 ylabel('$g(x)$', 'Interpreter', 'latex', 'FontSize', 14);
 
@@ -154,9 +156,10 @@ grid on;
 set(gca, 'box', 'on', 'FontName', 'Times New Roman', 'FontSize', 12);
 
 % Figure size and export (optional)
-set(gcf, 'Position', [100, 100, 1000, 700]);
+mBackground = '#FAFAFA';
+set(gcf, 'Position', [100, 100, 500, 500]);
 filename = sprintf('TTM_%d_b_%d_All_g_Functions.png', Target_TTM, Target_b);
-% saveas(gcf, fullfile(Path_Output, filename));
+exportgraphics(gcf, fullfile(Path_Output, filename), 'BackgroundColor', mBackground);
 
 
 %% Calculate First, Second, and Third Derivatives of g(x)
@@ -211,7 +214,7 @@ RT  = x_matrix .* AT;
 clear u_1 u_2 u_3 u_4 x_matrix
 
 
-%% 
+%% Setting & Winsorize
 
 Path_Data_04 = fullfile(Path_MainFolder, 'Code', '04  風險偏好指標（Risk Preference）');
 addpath(Path_Data_04);
@@ -229,16 +232,12 @@ AT_w = winsorize_percentile(AT, 10, 90);
 RT_w = winsorize_percentile(RT, 10, 90);
 
 
-%% 
-plot_risk_preference_surface(x_values, date_vec, ARA_w, xmin, xmax, 'Absolute Risk Aversion (ARA)', 'ARA');
-%% 
-plot_risk_preference_surface(x_values, date_vec, RRA_w, xmin, xmax, 'Relative Risk Aversion (RRA)', 'RRA');
-%% 
-plot_risk_preference_surface(x_values, date_vec, AP_w,  xmin, xmax, 'Absolute Prudence (AP)',       'AP');
-%% 
-plot_risk_preference_surface(x_values, date_vec, RP_w,  xmin, xmax, 'Relative Prudence (RP)',       'RP');
-%% 
-plot_risk_preference_surface(x_values, date_vec, AT_w,  xmin, xmax, 'Absolute Temperance (AT)',     'AT');
-%% 
-plot_risk_preference_surface(x_values, date_vec, RT_w,  xmin, xmax, 'Relative Temperance (RT)',     'RT');
+%% Plot
+
+plot_risk_preference_surface(x_values, date_vec, ARA_w, xmin, xmax, Target_TTM, Target_b, 'ARA', Path_Output);
+plot_risk_preference_surface(x_values, date_vec, RRA_w, xmin, xmax, Target_TTM, Target_b, 'RRA', Path_Output);
+plot_risk_preference_surface(x_values, date_vec, AP_w,  xmin, xmax, Target_TTM, Target_b, 'AP', Path_Output);
+plot_risk_preference_surface(x_values, date_vec, RP_w,  xmin, xmax, Target_TTM, Target_b, 'RP', Path_Output);
+plot_risk_preference_surface(x_values, date_vec, AT_w,  xmin, xmax, Target_TTM, Target_b, 'AT', Path_Output);
+plot_risk_preference_surface(x_values, date_vec, RT_w,  xmin, xmax, Target_TTM, Target_b, 'RT', Path_Output);
 
