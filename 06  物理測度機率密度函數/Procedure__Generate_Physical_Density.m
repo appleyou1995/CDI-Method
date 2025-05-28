@@ -1,13 +1,14 @@
 clear; clc
 
 Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文著作\CDI Method';
+Path_Output = fullfile(Path_MainFolder, 'Code', '06  輸出資料');
 
 
 %% Load the data
 
 % Realized Return
-Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  原始資料處理');
-Realized_Return = readtable(fullfile(Path_Data_01, 'Realized_Return.csv'));
+Path_Data_01 = fullfile(Path_MainFolder, 'Code', '01  輸出資料');
+Realized_Return = readtable(fullfile(Path_Data_01, 'Realized_Return_TTM_30.csv'));
 
 % RND
 Path_Data_02 = fullfile(Path_MainFolder, 'Code', '02  輸出資料');
@@ -18,7 +19,7 @@ years_to_merge = 1996:2021;
 
 for year = years_to_merge
     
-    input_filename = fullfile(Path_Data_02, sprintf('Output_Tables_%d.mat', year));
+    input_filename = fullfile(Path_Data_02, sprintf('TTM_30_RND_Tables_%d.mat', year));
         
     if exist(input_filename, 'file')
         data = load(input_filename);
@@ -31,7 +32,7 @@ end
 
 % Estimated theta
 Path_Data_03 = fullfile(Path_MainFolder, 'Code', '03  輸出資料 - 2021 JBF');
-mat_files = dir(fullfile(Path_Data_03, 'theta_hat (b=*.mat'));
+mat_files = dir(fullfile(Path_Data_03, 'TTM_30_theta_hat (b=*.mat'));
 
 for k = 1:length(mat_files)
     file_path = fullfile(Path_Data_03, mat_files(k).name);
@@ -62,8 +63,8 @@ clear Aggregate_Smooth_AllR
 
 %% Setting
 
-% Specify the month to plot: 20200318
-t = 291;
+% Specify the month
+[~, t] = max(Realized_Return.realized_ret);
 
 months = Smooth_AllR.Properties.VariableNames;
 
@@ -111,25 +112,23 @@ end
 
 b_values = [4, 6, 8];
 
-b_4_AllR_PDF = table();
-b_6_AllR_PDF = table();
-b_8_AllR_PDF = table();
-
-AllR_PD_Tables = {b_4_AllR_PDF, b_6_AllR_PDF, b_8_AllR_PDF};
+AllR_P_PDF_Arrays = cell(1, length(b_values));
+AllR_P_CDF_Arrays = cell(1, length(b_values));
 
 for idx_b = 1:length(b_values)
 
-    b = b_values(idx_b);
     current_g = store_g(idx_b, :);
 
     % Initialize a table for the current b value
-    PD_Table = zeros(length(months), length(max_gross_return_y));
+    PDF_Table = zeros(length(months), length(max_gross_return_y));
+    CDF_Table = zeros(length(months), length(max_gross_return_y));
 
     for t = 1:length(months)
 
         % Retrieve the RND and x values for the current month
-        original_x = Smooth_AllR{1, months{t}};
-        original_f = Smooth_AllR_RND{1, months{t}};
+        month_key = months{t};
+        original_x = Smooth_AllR{1, month_key};
+        original_f = Smooth_AllR_RND{1, month_key};
         
         % Interpolate using 'pchip' to avoid oscillation
         interpolated_f = interp1(original_x, original_f, max_gross_return_y, 'pchip', 0);
@@ -137,28 +136,49 @@ for idx_b = 1:length(b_values)
         % Ensure interpolated values are non-negative
         interpolated_f(interpolated_f < 0) = 0;
 
-        % Calculate the physical density for the current month
+        % Calculate the physical PDF & CDF for the current month
         current_month_PD = interpolated_f  .* current_g;
-        PD_Table(t, :) = current_month_PD;
+        PDF_Table(t, :) = current_month_PD;
+        CDF_Table(t, :) = cumsum(current_month_PD) / sum(current_month_PD);
+
 
     end
 
-    AllR_PD_Tables{idx_b} = PD_Table;
+    AllR_P_PDF_Arrays{idx_b} = PDF_Table;
+    AllR_P_CDF_Arrays{idx_b} = CDF_Table;
     
 end
 
-b_4_AllR_PDF = AllR_PD_Tables{1};
-b_6_AllR_PDF = AllR_PD_Tables{2};
-b_8_AllR_PDF = AllR_PD_Tables{3};
+% Assign output
+b_4_AllR_PDF = AllR_P_PDF_Arrays{1};
+b_6_AllR_PDF = AllR_P_PDF_Arrays{2};
+b_8_AllR_PDF = AllR_P_PDF_Arrays{3};
+
+b_4_AllR_CDF = AllR_P_CDF_Arrays{1};
+b_6_AllR_CDF = AllR_P_CDF_Arrays{2};
+b_8_AllR_CDF = AllR_P_CDF_Arrays{3};
+
+clear idx_b t month_key 
+clear current_g PDF_Table CDF_Table original_x original_f interpolated_f current_month_PD
 
 
-%% Output
-
-Path_Output = fullfile(Path_MainFolder, 'Code', '06  輸出資料');
+%% Output to mat
 
 save(fullfile(Path_Output, 'b_4_AllR_PDF.mat'), 'b_4_AllR_PDF');
 save(fullfile(Path_Output, 'b_6_AllR_PDF.mat'), 'b_6_AllR_PDF');
 save(fullfile(Path_Output, 'b_8_AllR_PDF.mat'), 'b_8_AllR_PDF');
+
+
+%% Output to csv
+
+writematrix(b_4_AllR_PDF, fullfile(Path_Output, 'b_4_AllR_PDF.csv'));
+writematrix(b_4_AllR_CDF, fullfile(Path_Output, 'b_4_AllR_CDF.csv'));
+
+writematrix(b_6_AllR_PDF, fullfile(Path_Output, 'b_6_AllR_PDF.csv'));
+writematrix(b_6_AllR_CDF, fullfile(Path_Output, 'b_6_AllR_CDF.csv'));
+
+writematrix(b_8_AllR_PDF, fullfile(Path_Output, 'b_8_AllR_PDF.csv'));
+writematrix(b_8_AllR_CDF, fullfile(Path_Output, 'b_8_AllR_CDF.csv'));
 
 
 %% Note: Check Smooth_AllR Value
