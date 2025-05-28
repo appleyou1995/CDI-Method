@@ -168,6 +168,10 @@ save(fullfile(Path_Output, 'b_4_AllR_PDF.mat'), 'b_4_AllR_PDF');
 save(fullfile(Path_Output, 'b_6_AllR_PDF.mat'), 'b_6_AllR_PDF');
 save(fullfile(Path_Output, 'b_8_AllR_PDF.mat'), 'b_8_AllR_PDF');
 
+save(fullfile(Path_Output, 'b_4_AllR_CDF.mat'), 'b_4_AllR_CDF');
+save(fullfile(Path_Output, 'b_6_AllR_CDF.mat'), 'b_6_AllR_CDF');
+save(fullfile(Path_Output, 'b_8_AllR_CDF.mat'), 'b_8_AllR_CDF');
+
 
 %% Output to csv
 
