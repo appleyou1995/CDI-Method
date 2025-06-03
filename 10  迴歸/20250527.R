@@ -2,6 +2,7 @@ library(R.matlab)
 library(readxl)
 library(tools)
 library(readr)
+library(e1071)
 library(broom)
 library(dplyr)
 library(xtable)
@@ -257,9 +258,43 @@ b_4_quantiles = compute_quantiles_from_cdf(b_4_CDF, R_vec)
 b_6_quantiles = compute_quantiles_from_cdf(b_6_CDF, R_vec)
 b_8_quantiles = compute_quantiles_from_cdf(b_8_CDF, R_vec)
 
+# Descriptive Statistics
+compute_stats <- function(df) {
+  stats <- data.frame(
+    mean    = round(apply(df, 1, mean), 4),
+    std_dev = round(apply(df, 1, sd), 4),
+    min     = round(apply(df, 1, min), 4),
+    max     = round(apply(df, 1, max), 4)
+  )
+  rownames(stats) <- rownames(df)
+  return(t(stats))
+}
+
+b_4_quantiles_stats = compute_stats(b_4_quantiles)
+b_6_quantiles_stats = compute_stats(b_6_quantiles)
+b_8_quantiles_stats = compute_stats(b_8_quantiles)
+
+print(xtable(b_4_quantiles_stats,
+             align = c("l", rep("c", ncol(b_4_quantiles_stats)))),
+            sanitize.colnames.function = identity,
+            sanitize.rownames.function = identity,
+            include.rownames = TRUE)
+
+print(xtable(b_6_quantiles_stats,
+             align = c("l", rep("c", ncol(b_6_quantiles_stats)))),
+      sanitize.colnames.function = identity,
+      sanitize.rownames.function = identity,
+      include.rownames = TRUE)
+
+print(xtable(b_8_quantiles_stats,
+             align = c("l", rep("c", ncol(b_8_quantiles_stats)))),
+      sanitize.colnames.function = identity,
+      sanitize.rownames.function = identity,
+      include.rownames = TRUE)
 
 
-run_quantile_regressions <- function(quantile_df, realized_ret) {
+# Regression
+run_regressions_of_quantile <- function(quantile_df, realized_ret) {
   quantile_names = rownames(quantile_df)
   n_q = length(quantile_names)
   
@@ -300,9 +335,9 @@ run_quantile_regressions <- function(quantile_df, realized_ret) {
 
 
 realized_ret = realized_return$realized_ret
-b_4_table = run_quantile_regressions(b_4_quantiles, realized_ret)
-b_6_table = run_quantile_regressions(b_6_quantiles, realized_ret)
-b_8_table = run_quantile_regressions(b_8_quantiles, realized_ret)
+b_4_table = run_regressions_of_quantile(b_4_quantiles, realized_ret)
+b_6_table = run_regressions_of_quantile(b_6_quantiles, realized_ret)
+b_8_table = run_regressions_of_quantile(b_8_quantiles, realized_ret)
 
 xtable(b_4_table,
        align = c("l", rep("c", ncol(b_4_table))),
