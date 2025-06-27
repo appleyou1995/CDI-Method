@@ -82,7 +82,7 @@ for b = [4, 6, 8]
         disp(['b = ' num2str(b) '  Estimated parameters:']);
         disp(theta_hat);
     
-        save_filename = ['theta_hat (b=' num2str(b) '_alpha' num2str(alpha) ').mat'];
+        save_filename = ['theta_hat (b=' num2str(b) '_alpha=' num2str(alpha) ').mat'];
         save(fullfile(Path_Output, save_filename), 'theta_hat');
 
         % % Evaluate validation loss
