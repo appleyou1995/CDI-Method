@@ -63,7 +63,7 @@ Smooth_AllR_RND_valid = Smooth_AllR_RND(:, idx_split+1:end);
 Realized_Return_valid = Realized_Return(idx_split+1:end, :);
 
 
-%% 
+%% Step 1
 
 for b = [4, 6, 8]
     all_theta = cell(length(alphas), 1);
