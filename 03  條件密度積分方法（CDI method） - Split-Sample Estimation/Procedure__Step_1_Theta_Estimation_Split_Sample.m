@@ -85,29 +85,6 @@ for b = [4, 6, 8]
         save_filename = ['theta_hat (b=' num2str(b) '_alpha=' num2str(alpha) ').mat'];
         save(fullfile(Path_Output, save_filename), 'theta_hat');
 
-        % % Evaluate validation loss
-        % params = [theta_hat, alpha, beta];
-        % g_valid = GMM_moment_conditions(params, ...
-        %     Smooth_AllR_valid, Smooth_AllR_RND_valid, Realized_Return_valid, ...
-        %     b, min_knot, max_knot);
-        % 
-        % validation_loss(i) = g_valid' * eye(length(g_valid)) * g_valid;
-        % 
-        % fprintf('b = %d, alpha = %.1f, validation loss = %.4f\n', b, alpha, validation_loss(i));
     end
 
-    % % Find the best alpha
-    % [~, best_idx] = min(validation_loss);
-    % alpha_star = alphas(best_idx);
-    % theta_star = all_theta{best_idx};
-    % 
-    % disp(['==== Best Result for b = ' num2str(b) ' ====']);
-    % disp(['Best alpha = ' num2str(alpha_star)]);
-    % disp('Estimated theta:');
-    % disp(theta_star);
-    % 
-    % % Save result
-    % save_filename = sprintf('TTM_%d_theta_hat_split (b=%d).mat', Target_TTM, b);
-    % save(fullfile(Path_Output, save_filename), ...
-    %     'theta_star', 'alpha_star', 'all_theta', 'alphas', 'validation_loss');
 end
