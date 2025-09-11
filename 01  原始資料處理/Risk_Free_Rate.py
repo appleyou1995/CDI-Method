@@ -6,18 +6,18 @@ import os
 import wrds
 
 
-# %%  論文資料夾路徑
+# %%  Main folder path
 
 Path_PaperFolder = '我的雲端硬碟/學術｜研究與論文/論文著作/CDI Method'
 
 
-# %%  Win 資料夾路徑
+# %%  Win folder path
 
 Path_Win = 'D:/Google/'
 Path_dir = os.path.join(Path_Win, Path_PaperFolder)
 
 
-# %%  Mac 資料夾路徑
+# %%  Mac folder path
 
 Path_Mac = '/Users/irisyu/Library/CloudStorage/GoogleDrive-jouping.yu@gmail.com/'
 Path_dir = os.path.join(Path_Mac, Path_PaperFolder)
@@ -88,12 +88,30 @@ for date in unique_dates:
         interpolated_rates.append({'date': date, 'days': TTM, 'rate': interpolated_rate})
 
 # Convert the results to a DataFrame
-df_interpolated = pd.DataFrame(interpolated_rates)
+df_risk_free_rate = pd.DataFrame(interpolated_rates)
+
+
+# %%  Calculate risk-free rate measures for a 29-day horizon
+
+DAY_COUNT = 365      # Day-count convention (ACT/365)
+DELTA_DAYS = 29      # Target maturity = 29 days
+
+# 29-day continuously compounded log return (not annualized)
+df_risk_free_rate['rf_log_29d']    = df_risk_free_rate['rate'] * (DELTA_DAYS / DAY_COUNT)
+
+# 29-day gross risk-free factor R^f = exp(log return)
+df_risk_free_rate['rf_gross_29d']  = np.exp(df_risk_free_rate['rf_log_29d'])
+
+# 29-day simple return (discrete return, not annualized)
+df_risk_free_rate['rf_simple_29d'] = df_risk_free_rate['rf_gross_29d'] - 1
+
+# 29-day discount factor (present value of $1 received in 29 days)
+df_risk_free_rate['df_29d']        = 1.0 / df_risk_free_rate['rf_gross_29d']
 
 
 # %%  Output
 
-df_interpolated['date'] = df_interpolated['date'].str.replace('-', '')
-df_interpolated.to_csv(os.path.join(Path_Output, 'Risk_Free_Rate.csv'), index=False)
+df_risk_free_rate['date'] = df_risk_free_rate['date'].str.replace('-', '')
+df_risk_free_rate.to_csv(os.path.join(Path_Output, 'Risk_Free_Rate.csv'), index=False)
 
 
