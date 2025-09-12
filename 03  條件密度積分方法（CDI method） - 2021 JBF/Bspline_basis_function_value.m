@@ -4,19 +4,14 @@ function B_value = Bspline_basis_function_value(n, b, min_knot, max_knot, functi
 
     % Initialize knots
     knots = linspace(min_knot, max_knot, num_knots);
-
-    % Find the index of inner knot points
-    middle_index = ceil((num_knots + 1) / 2);                                    % Way 1
-    % middle_index = floor((num_knots + 1) / 2);                                   % Way 2
     
     % Set the open uniform (left side)
-    knots(1:(middle_index - 1)) = knots(1);
+    knots(1:(n + 1)) = min_knot;
 
     % Set the open uniform (right side)
-    knots((middle_index + 1):end) = knots(end);
+    knots((end - n):end) = max_knot;
 
     i = function_index;
-    % B_value = zeros(size(y));
     B_value = OBJ_BS_D3(y, i, knots);
 
 end
