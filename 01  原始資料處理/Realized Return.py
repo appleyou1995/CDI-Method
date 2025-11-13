@@ -97,9 +97,9 @@ conn.close()
 # %%  Load Target Date & Exdate Data
 
 # TTM_list = [30, 60, 90, 180]
-TTM = 180
+TTM = 60
 
-filename = f'Hsieh_TTM_{TTM}.csv'
+filename = f'TTM_{TTM}.csv'
 
 df_Target_Date_Exdate = pd.read_csv(os.path.join(Path_Input, filename))
 
