@@ -8,9 +8,9 @@ Path_Output   = fullfile(Path_MainFolder, 'Code', '02  輸出資料 - no dividen
 
 % Specific Time-to-Maturity 
 % Target_AllTTM = 30;
-Target_AllTTM = 60;
+% Target_AllTTM = 60;
 % Target_AllTTM = 90;
-% Target_AllTTM = 180;
+Target_AllTTM = 180;
 
 
 %% Setting
@@ -132,7 +132,7 @@ for y = 1:length(years)
         clear Index
         
         % Find the options data with the nearest TTM to the target TTM for the given Target_Date
-        TTM = Target_TTM - 2;
+        TTM = Target_TTM - 4;
         TTM_Candidates = Data(Data(:, Index_Date) == Target_Date, Index_TTM);
         TTM_Min = min(TTM_Candidates(TTM_Candidates >= TTM));
         Index = find((Data(:, Index_Date)==Target_Date) & ...
