@@ -165,8 +165,7 @@ for y = 1:length(years)
         TTM = Data(:, Index_TTM) / 365;                                    % Annualized                                        
         DY = Data(:, Index_DY);                                            % Annualized
         
-        % Data(:, Index_S_ADJ) = exp(- DY .* TTM) .* S0;
-        Data(:, Index_S_ADJ) = S0;
+        Data(:, Index_S_ADJ) = exp(- DY .* TTM) .* S0;
         clear S0 TTM DY
     
         %*********************************************************************%
@@ -485,11 +484,14 @@ for y = 1:length(years)
         catch
         end
     
-    %     % Normalization: Sum to One
-    %     Smooth_AllK_RND = Smooth_AllK_RND / trapz(Smooth_AllK, Smooth_AllK_RND);   % Update: Smooth_AllK_RND (Normalized)
+        % Normalization: Sum to One
+        Smooth_AllK_RND = Smooth_AllK_RND / trapz(Smooth_AllK, Smooth_AllK_RND);
+        % Update: Smooth_AllK_RND (Normalized)
         
-        Smooth_AllR = Smooth_AllK / S0_ADJ(1);
-        Smooth_AllR_RND = S0_ADJ(1) * Smooth_AllK_RND;
+        % Smooth_AllR = Smooth_AllK / S0_ADJ(1);
+        % Smooth_AllR_RND = S0_ADJ(1) * Smooth_AllK_RND;
+        Smooth_AllR = Smooth_AllK / S0(1);
+        Smooth_AllR_RND = S0(1) * Smooth_AllK_RND;
         
         %*********************************************************************%
         % Step 15: Output
