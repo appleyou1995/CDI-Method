@@ -86,7 +86,7 @@ for TTM = TTM_list
         legend(leg_str, 'Interpreter', 'latex', ...
             'Location', 'northwest', 'Box', 'off');
 
-        ylim([-0.1 2.5]);
+        ylim([-0.1 3.0]);
 
 
         % 6. Save output

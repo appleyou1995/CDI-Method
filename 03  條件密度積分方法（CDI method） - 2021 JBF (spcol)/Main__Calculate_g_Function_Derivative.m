@@ -5,7 +5,7 @@ Path_MainFolder = 'D:\Google\我的雲端硬碟\學術｜研究與論文\論文�
 %% Load the data
 
 % Target_TTM = [30, 60, 90, 180]
-Target_TTM = 180;
+Target_TTM = 30;
 
 % Risk-Free Rate  [1. Date (YYYYMMDD) | 2. TTM (Days) | 3. Risk-Free Rate (Annualized)]
 Path_Data = fullfile(Path_MainFolder, 'Data');
@@ -162,7 +162,7 @@ for idx = 1:3
     xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
     ylabel('$g(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
-    ylim([-0.1, 2.3]);
+    ylim([-0.1, 2.8]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
@@ -176,7 +176,7 @@ for idx = 1:3
     xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
     ylabel('$g^\prime(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
-    ylim([-5, 3]);
+    ylim([-5.5, 4.5]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
@@ -190,7 +190,7 @@ for idx = 1:3
     xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
     ylabel('$g^{\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
-    ylim([-40, 31]);
+    ylim([-45, 20]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
@@ -204,7 +204,7 @@ for idx = 1:3
     xlabel('$x$', 'Interpreter', 'latex', 'FontSize', 14);
     ylabel('$g^{\prime\prime\prime}(x)$', 'Interpreter', 'latex', 'FontSize', 14);
     xlim([x_min, x_max]);
-    ylim([-12, 2]);
+    ylim([-280, 280]);
     grid on;
     set(gca, 'box', 'on');
     hold off;
